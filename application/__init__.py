@@ -42,6 +42,8 @@ from application.Views.PostsView import PostsView
 from application.Views.UserView import UserView
 from application.API.APIRoutes.PostView import APIPostView
 from application.API.APIRoutes.ListView import APIListView
+from application.API.APIRoutes.BooksAPI import BooksAPI
+from application.API.APIRoutes.StacksAPI import StacksAPI
 #
 #
 # ProductsView.register(app, route_base='cpanel/products/')
@@ -50,5 +52,7 @@ PostsView.register(app, route_base='/cpanel/posts/')
 CategoriesView.register(app, route_base='/cpanel/categories/')
 APIPostView.register(app, route_base='/api/post/')
 APIListView.register(app, route_base='/api/list/')
+BooksAPI.register(app, route_base='/api/book/')
+StacksAPI.register(app, route_base='/api/stack/')
 
 
