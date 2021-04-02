@@ -1,0 +1,108 @@
+{% extends "cpanel/master_layout.html" %}
+{% block content %}
+<section class="wrapper main-wrapper" style=''>
+
+    <div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+        <div class="page-title">
+
+            <div class="pull-left">
+                <h1 class="title">{{ title }}</h1>
+            </div>
+
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="col-lg-12">
+        <section class="box nobox">
+            <div class="content-body">
+                <div class="row">
+
+                    <div class="col-md-9 col-sm-12 col-xs-12">
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12">
+
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <br>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 search_data">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <form method="post" action="{{url_for('UserView:update')}}"
+                                      enctype="multipart/form-data">
+                                    {{form.csrf_token}}
+                                    <div class="form-group">
+                                        <label for="">Full name</label>
+                                        {{form.fullname(class_='form-control',placeholder='Full name')}}
+                                        {% if form.fullname.errors %}
+                                        {% for error in form.fullname.errors %}
+                                        <small class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="">{{form.email.label}}</label>
+                                        {{form.email(class_='form-control')}}
+                                        {% if form.email.errors %}
+                                        {% for error in form.email.errors %}
+                                        <small class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+
+                                    </div>
+                                    <div class="form-group">
+                                        {{form.submit(class_='btn btn-primary',value='Update')}}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+                        <div class="row"  style="margin-top:30px;">
+                            <div class="col-md-8">
+                                                            <h3>Change Password</h3>
+
+                                <form method="post" action="{{url_for('UserView:update')}}"
+                                      enctype="multipart/form-data">
+                                    {{form.csrf_token}}
+                                    <div class="form-group">
+                                        <label for="">{{formpass.old_password.label}}</label>
+                                        {{formpass.old_password(class_='form-control',placeholder=formpass.old_password.label.text)}}
+                                        {% if formpass.old_password.errors %}
+                                        {% for error in formpass.old_password.errors %}
+                                        <small class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="">{{formpass.new_password.label}}</label>
+                                        {{formpass.new_password(class_='form-control')}}
+                                        {% if formpass.new_password.errors %}
+                                        {% for error in formpass.new_password.errors %}
+                                        <small class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+
+                                    </div>
+                                    <div class="form-group">
+                                        {{formpass.submit(class_='btn btn-primary',value='Change Password')}}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+    </div>
+</section>
+
+
+</section>
+{% endblock %}

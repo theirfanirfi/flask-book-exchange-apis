@@ -1,0 +1,117 @@
+{% extends "cpanel/master_layout.html" %}
+{% block content %}
+<section class="wrapper main-wrapper" style=''>
+
+    <div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+        <div class="page-title">
+
+            <div class="pull-left">
+                <h1 class="title">{{ title }}</h1>
+            </div>
+
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="col-lg-12">
+        <section class="box nobox">
+            <div class="content-body">
+                <div class="row">
+
+                    <div class="col-md-9 col-sm-12 col-xs-12">
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12">
+
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <br>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 search_data">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <form method="post" action="{{url_for('PartnerView:post')}}"
+                                      enctype="multipart/form-data">
+                                    {{form.csrf_token}}
+                                    <div class="form-group">
+                                        <label for="">{{form.partner_title.label}}</label>
+                                        {{form.partner_title(class_='form-control',placeholder='Partner Title')}}
+                                        {% if form.partner_title.errors %}
+                                        {% for error in form.partner_title.errors %}
+                                        <small class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <label for="">{{form.partner_image.label}}</label>
+                                        {{form.partner_image()}}
+                                        {% if form.partner_image.errors %}
+                                        {% for error in form.partner_image.errors %}
+                                        <small class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        {{form.submit(class_='btn btn-primary',value='Add Partner')}}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <table id="example-1" class="table table-striped dt-responsive display" cellspacing="0"
+                                       width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th>Partner Title</th>
+                                        <th>Image</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tfoot>
+                                    <tr>
+                                        <th>Partner Title</th>
+                                        <th>Image</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    </tfoot>
+
+                                    <tbody>
+                                    {% if partners %}
+                                    {% for p in partners %}
+                                    <tr>
+                                        <td>{{p.partner_title}}</td>
+                                        <td><img src="{{url_for('static', filename='partners/')}}{{p.partner_image}}" width="90" height="80" /> </td>
+                                        <td>
+                                            <a href="{{url_for('PartnerView:delete',id=p.partner_id)}}"
+                                               class="btn btn-danger">Delete</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+    </div>
+</section>
+
+
+</section>
+{% endblock %}

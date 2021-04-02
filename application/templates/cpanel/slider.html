@@ -1,0 +1,117 @@
+{% extends "cpanel/master_layout.html" %}
+{% block content %}
+<section class="wrapper main-wrapper" style=''>
+
+    <div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+        <div class="page-title">
+
+            <div class="pull-left">
+                <h1 class="title">{{ title }}</h1>
+            </div>
+
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="col-lg-12">
+        <section class="box nobox">
+            <div class="content-body">
+                <div class="row">
+
+                    <div class="col-md-9 col-sm-12 col-xs-12">
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12">
+
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <br>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 search_data">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <form method="post" action="{{url_for('SliderView:post')}}"
+                                      enctype="multipart/form-data">
+                                    {{form.csrf_token}}
+                                    <div class="form-group">
+                                        <label for="">{{form.slider_title.label}}</label>
+                                        {{form.slider_title(class_='form-control',placeholder='Slider Title')}}
+                                        {% if form.slider_title.errors %}
+                                        {% for error in form.slider_title.errors %}
+                                        <small class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="">{{form.slider_image.label}}</label>
+                                        {{form.slider_image()}}
+                                        {% if form.slider_image.errors %}
+                                        {% for error in form.slider_image.errors %}
+                                        <small class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+
+                                    </div>
+
+
+
+                                    <div class="form-group">
+                                        {{form.submit(class_='btn btn-primary',value='Add Slider Image')}}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <table id="example-1" class="table table-striped dt-responsive display" cellspacing="0"
+                                       width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th>Slider Title</th>
+                                        <th>Slider Image</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tfoot>
+                                    <tr>
+                                        <th>Slider Title</th>
+                                        <th>Slider Image</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    </tfoot>
+
+                                    <tbody>
+                                    {% if sliders %}
+                                    {% for s in sliders %}
+                                    <tr>
+                                        <td>{{s.slider_title}}</td>
+                                        <td><img src="{{url_for('static', filename='sliders/')}}{{s.slider_image}}" width="90" height="80" /> </td>
+                                        <td>
+                                            <a href="{{url_for('SliderView:delete',id=s.slider_id)}}"
+                                               class="btn btn-danger">Delete</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+    </div>
+</section>
+
+
+</section>
+{% endblock %}

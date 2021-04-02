@@ -1,0 +1,108 @@
+{% extends "cpanel/master_layout.html" %}
+{% block content %}
+<section class="wrapper main-wrapper" style=''>
+
+    <div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+        <div class="page-title">
+
+            <div class="pull-left">
+                <h1 class="title">{{ title }}</h1>
+            </div>
+
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="col-lg-12">
+        <section class="box nobox">
+            <div class="content-body">
+                <div class="row">
+
+                    <div class="col-md-9 col-sm-12 col-xs-12">
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12">
+
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <br>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 search_data">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <form method="post" action="{{url_for('LogoView:post')}}"
+                                      enctype="multipart/form-data">
+                                    {{form.csrf_token}}
+
+
+
+
+                                    <div class="form-group">
+                                        <label for="">{{form.logo_image.label}}</label>
+                                        {{form.logo_image()}}
+                                        {% if form.logo_image.errors %}
+                                        {% for error in form.customer_image.errors %}
+                                        <small class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        {{form.submit(class_='btn btn-primary',value='Add Site Logo')}}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                <table id="example-1" class="table table-striped dt-responsive display" cellspacing="0"
+                                       width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tfoot>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                    </tfoot>
+
+                                    <tbody>
+                                    {% if logos %}
+                                    {% for l in logos %}
+                                    <tr>
+                                        <td><img src="{{url_for('static', filename='logos/')}}{{l.logo_image}}" width="90" height="80" /> </td>
+
+                                        <td>
+                                            <a href="{{url_for('LogoView:delete',id=l.logo_id)}}"
+                                               class="btn btn-danger">Delete</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% endif %}
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+    </div>
+</section>
+
+
+</section>
+{% endblock %}
