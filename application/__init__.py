@@ -44,6 +44,8 @@ from application.API.APIRoutes.PostView import APIPostView
 from application.API.APIRoutes.ListView import APIListView
 from application.API.APIRoutes.BooksAPI import BooksAPI
 from application.API.APIRoutes.StacksAPI import StacksAPI
+from application.API.APIRoutes.LikesAPI import LikesAPI
+from application.API.APIRoutes.CommentsAPI import CommentsAPI
 #
 #
 # ProductsView.register(app, route_base='cpanel/products/')
@@ -54,5 +56,7 @@ APIPostView.register(app, route_base='/api/post/')
 APIListView.register(app, route_base='/api/list/')
 BooksAPI.register(app, route_base='/api/book/')
 StacksAPI.register(app, route_base='/api/stack/')
+LikesAPI.register(app, route_base='/api/like/')
+CommentsAPI.register(app, route_base='/api/comment/')
 
 

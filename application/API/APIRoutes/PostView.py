@@ -8,7 +8,12 @@ class APIPostView(FlaskView):
     def index(self):
         response = dict({"isLoggedIn": True})
         user = AuthorizeRequest(request.headers)
-        return 'working'
+        if not user:
+            return jsonify(notLoggedIn)
+
+        posts = BF.getBL("post").get_posts(user)
+        response.update({"posts": posts})
+        return jsonify(response)
 
     @route('/create/', methods=['POST'])
     def create(self):

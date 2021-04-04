@@ -2,6 +2,8 @@ from application.Models.models import *
 from application.API.BusinessLogic.PostBL import PostBL
 from application.API.BusinessLogic.ListBL import ListBL
 from application.API.BusinessLogic.BooksBL import BooksBL
+from application.API.BusinessLogic.LikesBL import LikesBL
+from application.API.BusinessLogic.CommentBL import CommentBL
 class BF:
     @staticmethod
     def getBL(blName):
@@ -14,6 +16,10 @@ class BF:
             return ListBL()
         elif blName == "book":
             return BooksBL()
+        elif blName == "like":
+            return LikesBL()
+        elif blName == "comment":
+            return CommentBL()
 
 
 

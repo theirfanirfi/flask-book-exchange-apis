@@ -1,10 +1,11 @@
 from application.Models.models import User
 from flask import escape
-from base64 import b64decode
+from base64 import b64decode, b64encode
 import json
 from datetime import datetime
 from application import app
 import os
+from geopy.distance import geodesic
 
 notLoggedIn = dict({
     "isLoggedIn": False,
@@ -58,6 +59,14 @@ def AuthorizeRequest(headers):
     return user.first()
 
 
+def isBase64(s):
+    try:
+        if b64encode(b64decode(s)) == s:
+            return get_decoded(s)
+        return False
+    except Exception:
+        return False
+
 def get_decoded(data):
     data = str(data).encode('ascii')
     missing_padding = len(data) % 4
@@ -98,4 +107,7 @@ def uploadPostImage(image, user):
     except Exception as e:
         print(e)
         return False, None
+
+def get_location_distance(location_1, location_2):
+    return geodesic(location_1, location_2).km
 

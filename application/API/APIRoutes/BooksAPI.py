@@ -9,13 +9,14 @@ class BooksAPI(FlaskView, BusinessLogic):
 
     def index(self):
         response = dict({"isLoggedIn": True})
-        books = BF.getBL("book").get_by_column(
-            modelName="book",
-            columnName="is_available_for_exchange",
-            columnValue=1,
-            isMany=True,
-            isDump=True)
-        return jsonify(books)
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return False, jsonify(notLoggedIn)
+
+        query = "SELECT * FROM book WHERE book.is_available_for_exchange = 1 AND book.user_id != "+str(user.user_id)
+        isFetched, books = super().get_by_custom_query("book", query, isMany=True,isDump=True)
+        response.update({"isFetched": isFetched, "books":books})
+        return jsonify(response)
 
     def post(self):
         isCreated, json_res = super().create(request=request, modelName="book", involve_login_user=True)

@@ -14,3 +14,7 @@ class MF:
             return Book(), Book
         elif modelName == "stack":
             return Stack(), Stack
+        elif modelName == "like":
+            return Like(), Like
+        elif modelName == "comment":
+            return Comment(), Comment

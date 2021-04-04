@@ -2,13 +2,13 @@ from abc import ABC
 from application.API.Factory.ModelFactory import MF
 from application.API.Factory.SchemaFactory import SF
 from application import db
-from application.API.utils import AuthorizeRequest, notLoggedIn, invalidArgsResponse
+from application.API.utils import AuthorizeRequest, notLoggedIn, invalidArgsResponse, b64_to_data
 from flask import jsonify
-from application.Models.models import Book
+from sqlalchemy import text
 
 
 class BusinessLogic(ABC):
-    def create(self, request, modelName, involve_login_user=False):
+    def create(self, request, modelName, involve_login_user=False, isDump=True, isBase64Decode=False):
         response = dict({"isLoggedIn": True})
         user = AuthorizeRequest(request.headers)
         if not user:
@@ -24,7 +24,7 @@ class BusinessLogic(ABC):
                 if not hasattr(model, field):
                     return False, jsonify(invalidArgsResponse)
 
-                setattr(model, field, form[field])
+                setattr(model, field, b64_to_data(form[field]) if isBase64Decode else form[field])
 
         if involve_login_user:
             model.user_id = user.user_id
@@ -33,7 +33,7 @@ class BusinessLogic(ABC):
             db.session.add(model)
             db.session.commit()
             response.update({"isCreated": True,
-                             modelName.lower(): SF.getSchema(modelName, isMany=False).dump(model),
+                             modelName.lower(): SF.getSchema(modelName, isMany=False).dump(model) if isDump else model,
                              "message": modelName + " created"})
             return True, jsonify(response)
         except Exception as e:
@@ -51,6 +51,15 @@ class BusinessLogic(ABC):
         data = data.all() if isMany else data.first()
         return True, SF.getSchema(modelName, isMany).dump(data) if isDump else data
 
+    def get_by_custom_query(self, schemaName, query, isMany=False, isDump=False):
+        try:
+            sql = text(query)
+            result = db.engine.execute(sql)
+            return True, SF.getSchema(schemaName, isMany).dump(result) if isDump else result
+        except Exception as e:
+            print(e)
+            return False, 0
+
     def delete_row(self, request, modelName, columnName, columnValue, verify_user=True):
         response = dict({"isLoggedIn": True})
         user = AuthorizeRequest(request.headers)
@@ -64,7 +73,7 @@ class BusinessLogic(ABC):
         data = None
 
         if verify_user:
-            data = model[1].query.filter(getattr(model[1], columnName) == columnValue, model.user_id == user.user_id)
+            data = model[1].query.filter(getattr(model[1], columnName) == columnValue, model[1].user_id == user.user_id)
         else:
             data = model[1].query.filter(getattr(model[1], columnName) == columnValue)
 

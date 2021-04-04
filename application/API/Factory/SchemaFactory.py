@@ -4,7 +4,7 @@ class SF:
     def getSchema(schemaName, isMany=True):
         schemaName = schemaName.lower()
         if schemaName == "post":
-            return PostSchema()
+            return PostSchema(many=isMany)
         elif schemaName == "user":
             return UserSchema(many=isMany)
         elif schemaName == "list":
@@ -13,3 +13,7 @@ class SF:
             return BookSchema(many=isMany)
         elif schemaName == "stack":
             return StackSchema(many=isMany)
+        elif schemaName == "like":
+            return LikeSchema(many=isMany)
+        elif schemaName == "comment":
+            return CommentSchema(many=isMany)
