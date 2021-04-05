@@ -19,8 +19,11 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(200), nullable=False)
     is_admin = db.Column(db.Integer, default=0)
     profile_image = db.Column(db.Text, nullable=True)
+    location_longitude = db.Column(db.String(50), nullable=True)
+    location_latitude = db.Column(db.String(50), nullable=True)
     created_at = db.Column(db.String(50), default=str(datetime.now()))
     updated_at = db.Column(db.String(50), default=str(datetime.now()))
+
 
     def get_id(self):
         return (self.user_id)
@@ -152,6 +155,12 @@ class BookSchema(ma.Schema):
             for prop in class_mapper(Book).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
+        fields = fields + [
+            prop.key
+            for prop in class_mapper(User).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+        fields = fields + ['distance_in_km']
 
 
 class StackSchema(ma.Schema):
