@@ -5,7 +5,7 @@ from application.API.Factory.BLFactory import BF
 from application.API.BusinessLogic.BusinessLogic import BusinessLogic
 
 
-class BooksAPI(FlaskView, BusinessLogic):
+class ExchangeAPI(FlaskView, BusinessLogic):
 
     def index(self):
         response = dict({"isLoggedIn": True})
@@ -24,27 +24,15 @@ class BooksAPI(FlaskView, BusinessLogic):
         return jsonify(response)
 
     def post(self):
-        response = dict({"isLoggedIn": True})
-        user = AuthorizeRequest(request.headers)
-        if not user:
-            return False, jsonify(notLoggedIn)
-
-
-        if 'book_isbn' in request.form:
-            isBookFound, book = BF.getBL("book").get_book_by_isbn(request.form['book_isbn'], isDump=True,user=user)
-            if isBookFound:
-                book = book
-                return jsonify({"isLoggedIn": True, "isCreated": True, "book": book, "message": "Book added"})
-
-        isCreated, json_res = super().create(request=request, modelName="book", involve_login_user=True)
+        isCreated, json_res = super().create(request=request, modelName="exchange", involve_login_user=True)
         return json_res
 
     def delete(self, id):
         print(id)
         isDeleted, json_res = super().delete_row(request=request,
-                                                 modelName="book",
-                                                 columnName="book_id",
+                                                 modelName="exchange",
+                                                 columnName="exchange_id",
                                                  columnValue=id,
-                                                 verify_user=False)
+                                                 verify_user=True)
         print(json_res)
         return json_res

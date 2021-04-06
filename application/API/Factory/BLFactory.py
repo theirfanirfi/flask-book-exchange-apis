@@ -4,6 +4,7 @@ from application.API.BusinessLogic.ListBL import ListBL
 from application.API.BusinessLogic.BooksBL import BooksBL
 from application.API.BusinessLogic.LikesBL import LikesBL
 from application.API.BusinessLogic.CommentBL import CommentBL
+from application.API.BusinessLogic.ExchangeBL import ExchangeBL
 class BF:
     @staticmethod
     def getBL(blName):
@@ -20,6 +21,8 @@ class BF:
             return LikesBL()
         elif blName == "comment":
             return CommentBL()
+        elif blName == "exchange":
+            return ExchangeBL()
 
 
 

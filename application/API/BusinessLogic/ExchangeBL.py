@@ -4,27 +4,13 @@ from application import db
 from application.API.Factory.SchemaFactory import SF
 from application.API.BusinessLogic.BusinessLogic import BusinessLogic
 
-class BooksBL(BusinessLogic):
+class ExchangeBL(BusinessLogic):
 
     def getBooks(self, user, offset=0, isDump=False):
         books = Book.query.filter_by(is_available_for_exchange=1).all()
         return books if not isDump else SF.getSchema("book",isMany=True).dump(books)
 
-    def get_book_by_isbn(self, isbn, isDump=False,user=None):
-        checkExistence = None
-
-        if user is None:
-            checkExistence = Book.query.filter_by(book_isbn=isbn)
-        else:
-            checkExistence = Book.query.filter_by(book_isbn=isbn, user_id=user.user_id)
-
-        if checkExistence.count() > 0:
-            book =checkExistence.first()
-            return True, book if not isDump else SF.getSchema("book",isMany=False).dump(book)
-        return False, "Book not found"
-
     def add_list(self, title, isbn, desc, cover_image,author, source, user, isDump=False):
-
         book = Book()
         book.book_isbn = isbn
         book.book_title = title

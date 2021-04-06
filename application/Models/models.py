@@ -72,12 +72,13 @@ class Book(db.Model):
 
 class Exchange(db.Model):
     exchange_id = db.Column(db.Integer, primary_key=True)
-    exchanger_user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, nullable=False)
     to_exchange_with_user_id = db.Column(db.Integer, nullable=False)
     book_to_be_sent_id = db.Column(db.Integer, nullable=False)
     book_to_be_received_id = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.String(50), default=str(datetime.now()))
-    updated_at = db.Column(db.String(50), default=str(datetime.now()))
+    is_exchange_confirmed = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
 
 class Stack(db.Model):
@@ -184,6 +185,24 @@ class LikeSchema(ma.Schema):
         fields = [
             prop.key
             for prop in class_mapper(Like).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+
+class ExchangeSchema(ma.Schema):
+    class Meta:
+        fields = [
+            prop.key
+            for prop in class_mapper(Exchange).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+        fields += [
+            prop.key
+            for prop in class_mapper(User).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+        fields += [
+            prop.key
+            for prop in class_mapper(Book).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
 

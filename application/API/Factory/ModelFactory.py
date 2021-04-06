@@ -18,3 +18,5 @@ class MF:
             return Like(), Like
         elif modelName == "comment":
             return Comment(), Comment
+        elif modelName == "exchange":
+            return Exchange(), Exchange

@@ -46,6 +46,7 @@ from application.API.APIRoutes.BooksAPI import BooksAPI
 from application.API.APIRoutes.StacksAPI import StacksAPI
 from application.API.APIRoutes.LikesAPI import LikesAPI
 from application.API.APIRoutes.CommentsAPI import CommentsAPI
+from application.API.APIRoutes.ExchangeAPI import ExchangeAPI
 #
 #
 # ProductsView.register(app, route_base='cpanel/products/')
@@ -58,5 +59,6 @@ BooksAPI.register(app, route_base='/api/book/')
 StacksAPI.register(app, route_base='/api/stack/')
 LikesAPI.register(app, route_base='/api/like/')
 CommentsAPI.register(app, route_base='/api/comment/')
+ExchangeAPI.register(app, route_base='/api/exchange/')
 
 

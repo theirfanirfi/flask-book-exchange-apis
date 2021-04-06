@@ -67,9 +67,7 @@ class BusinessLogic(ABC):
             return False, jsonify(notLoggedIn)
 
         model = MF.getModel(modelName)
-        print('columnName='+str(columnName))
         attribute = getattr(model[1], columnName)
-        print(attribute)
         data = None
 
         if verify_user:

@@ -17,3 +17,5 @@ class SF:
             return LikeSchema(many=isMany)
         elif schemaName == "comment":
             return CommentSchema(many=isMany)
+        elif schemaName == "exchange":
+            return ExchangeSchema(many=isMany)
