@@ -5,7 +5,7 @@ class SF:
         schemaName = schemaName.lower()
         if schemaName == "post":
             return PostSchema(many=isMany)
-        elif schemaName == "user":
+        elif schemaName == "user" or schemaName == "users":
             return UserSchema(many=isMany)
         elif schemaName == "list":
             return ListSchema(many=isMany)

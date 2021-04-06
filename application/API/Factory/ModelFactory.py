@@ -6,7 +6,7 @@ class MF:
         modelName = modelName.lower()
         if modelName == "post":
             return Post()
-        elif modelName == "user":
+        elif modelName == "user" or modelName == "users":
             return User()
         elif modelName == "list":
             return List()

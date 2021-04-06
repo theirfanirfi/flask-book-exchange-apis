@@ -67,7 +67,6 @@ class BusinessLogic(ABC):
             return False, jsonify(notLoggedIn)
 
         model = MF.getModel(modelName)
-        attribute = getattr(model[1], columnName)
         data = None
 
         if verify_user:
@@ -90,3 +89,9 @@ class BusinessLogic(ABC):
                  "message": "Error occurred in deleting the " + modelName + ". Please try again"
                  })
             return True, jsonify(response)
+
+
+    def search_model(self, modelName, searchColumn, searchValue,query=None):
+        sql = "SELECT * FROM " + modelName + " WHERE "+searchColumn+" Like '%"+str(searchValue)+"%'"
+        isFound, result = self.get_by_custom_query(schemaName=modelName, query=sql if query is None else query, isMany=True, isDump=True)
+        return result

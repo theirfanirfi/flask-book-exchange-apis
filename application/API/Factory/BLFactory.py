@@ -11,7 +11,7 @@ class BF:
         blName = blName.lower()
         if blName == "post":
             return PostBL()
-        elif blName == "user":
+        elif blName == "user" or blName == "users":
             return User()
         elif blName == "list":
             return ListBL()

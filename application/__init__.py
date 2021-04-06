@@ -47,6 +47,7 @@ from application.API.APIRoutes.StacksAPI import StacksAPI
 from application.API.APIRoutes.LikesAPI import LikesAPI
 from application.API.APIRoutes.CommentsAPI import CommentsAPI
 from application.API.APIRoutes.ExchangeAPI import ExchangeAPI
+from application.API.APIRoutes.SearchAPI import SearchAPI
 #
 #
 # ProductsView.register(app, route_base='cpanel/products/')
@@ -60,5 +61,6 @@ StacksAPI.register(app, route_base='/api/stack/')
 LikesAPI.register(app, route_base='/api/like/')
 CommentsAPI.register(app, route_base='/api/comment/')
 ExchangeAPI.register(app, route_base='/api/exchange/')
+SearchAPI.register(app, route_base='/api/search/')
 
 
