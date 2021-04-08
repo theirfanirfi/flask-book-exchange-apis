@@ -18,6 +18,7 @@ class ListBL:
             db.session.commit()
             return True, newList if not isDump else SF.getSchema("list", False).dump(newList)
         except Exception as e:
+            print(e)
             return False, None
 
     def get_list_by_id(self, list_id, isDump=False):

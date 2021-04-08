@@ -20,22 +20,29 @@ class SearchAPI(FlaskView, BusinessLogic):
 
     def get(self, type, search):
         response = dict({"isLoggedIn": True})
-        # user = AuthorizeRequest(request.headers)
-        # if not user:
-        #     return jsonify(notLoggedIn)
-
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return jsonify(notLoggedIn)
 
         if type == "posts":
-            posts = super().search_model(modelName="post", searchColumn="post_title", searchValue=search)
-            return jsonify({"posts": posts})
+            posts = BF.getBL("post").search_posts(user, search)
+            response.update({"posts": posts})
+            return jsonify(response)
         elif type == "users":
             users = super().search_model(modelName="users", searchColumn="fullname", searchValue=search)
-            return jsonify({"users": users})
+            response.update({"users": users})
+            return jsonify(response)
         elif type == "books":
-            query = "SELECT * FROM book WHERE (book_title Like '%"+search+"%' "\
-                    +"OR book_author LIKE '%"+search+"%') OR book_isbn = '"+str(search)+"'"
+            #query = "SELECT * FROM book WHERE ((book_title Like '%"+search+"%' OR book_author LIKE '%"+search+"%') OR book_isbn = '"+str(search)+"') AND is_available_for_exchange = 1"
+
+            query = "SELECT book.*, " \
+                    " 111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(" + user.location_latitude + ")) * COS(RADIANS(users.location_latitude))" \
+                                                                                                 " * COS(RADIANS(" + user.location_longitude + " - users.location_longitude)) + SIN(RADIANS(" + user.location_latitude + ")) * SIN(RADIANS(users.location_latitude))))) AS distance_in_km, " \
+                                                                                                                                                                                                                         "users.fullname, users.profile_image, users.location_longitude, users.location_latitude" \
+                                                                                                                                                                                                                         " FROM book LEFT JOIN users on users.user_id = book.user_id WHERE ((book_title Like '%"+search+"%' OR book_author LIKE '%"+search+"%') OR book_isbn = '"+str(search)+"') AND is_available_for_exchange = 1"
             books = super().search_model(modelName="book",query=query, searchColumn="book_title", searchValue=search)
-            return jsonify({"books": books})
+            response.update({"books": books})
+            return jsonify(response)
         else:
             return jsonify(invalidArgsResponse)
     #

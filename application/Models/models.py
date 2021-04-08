@@ -44,16 +44,16 @@ class Post(db.Model):
     post_category = db.Column(db.Integer, nullable=True)
     is_admin_post = db.Column(db.Integer, default=0)
     user_id = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.String(50), default=str(datetime.now()))
-    updated_at = db.Column(db.String(50), default=str(datetime.now()))
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
 
 class List(db.Model):
     list_id = db.Column(db.Integer, primary_key=True)
     list_title = db.Column(db.String(200), nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.String(50), default=str(datetime.now()))
-    updated_at = db.Column(db.String(50), default=str(datetime.now()))
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
 
 class Book(db.Model):
@@ -66,8 +66,8 @@ class Book(db.Model):
     user_id = db.Column(db.Integer, nullable=False)
     book_added_from = db.Column(db.String(200), nullable=False)
     is_available_for_exchange = db.Column(db.Integer, default=1)
-    created_at = db.Column(db.String(50), default=str(datetime.now()))
-    updated_at = db.Column(db.String(50), default=str(datetime.now()))
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
 
 class Exchange(db.Model):

@@ -22,6 +22,7 @@ class PostBL:
             db.session.commit()
             return True, post
         except Exception as e:
+            print(e)
             return False, None
 
     def get_posts(self, user):
@@ -29,6 +30,15 @@ class PostBL:
                    " (SELECT COUNT(*) FROM likes WHERE likes.post_id = post.post_id AND likes.user_id = "+str(user.user_id)+") as isLiked, "
                    +" (SELECT COUNT(*) FROM likes WHERE likes.post_id = post.post_id) as likes_count, "
                    "(SELECT COUNT(*) FROM comments WHERE comments.post_id = post.post_id) as comments_count "
-                   "FROM post LEFT JOIN users on users.user_id = post.user_id")
+                   "FROM post LEFT JOIN users on users.user_id = post.user_id ORDER BY post.post_id DESC")
+        posts = db.engine.execute(sql)
+        return SF.getSchema("post", isMany=True).dump(posts)
+
+    def search_posts(self, user, search):
+        sql = text("SELECT post.*, users.fullname, "
+                   " (SELECT COUNT(*) FROM likes WHERE likes.post_id = post.post_id AND likes.user_id = "+str(user.user_id)+") as isLiked, "
+                   +" (SELECT COUNT(*) FROM likes WHERE likes.post_id = post.post_id) as likes_count, "
+                   "(SELECT COUNT(*) FROM comments WHERE comments.post_id = post.post_id) as comments_count "
+                   "FROM post LEFT JOIN users on users.user_id = post.user_id WHERE post_title Like '%"+str(search)+"%'")
         posts = db.engine.execute(sql)
         return SF.getSchema("post", isMany=True).dump(posts)

@@ -23,6 +23,8 @@ class APIPostView(FlaskView):
         if not user:
             return jsonify(notLoggedIn)
 
+        print(request.files)
+
         if request.method == "POST":
             if request.form["post_title"] == "" or request.form["description"] == "":
                 response.update(
