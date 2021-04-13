@@ -27,3 +27,4 @@ class LikesAPI(FlaskView):
         isDeleted, json_res = BF.getBL("like").delete_row(request, id)
         print(json_res)
         return json_res
+

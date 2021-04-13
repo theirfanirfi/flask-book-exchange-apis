@@ -8,8 +8,21 @@ from sqlalchemy import text
 import types
 
 
-class BusinessLogic(ABC):
-    def create(self, request, modelName, involve_login_user=False, isDump=True, isBase64Decode=False, post_insertion=None):
+class BL(ABC):
+
+    def run_validators(self):
+        for validator in self.validators:
+            if not isinstance(validator, types.FunctionType):
+                v = validator(self.form).validate()
+                if not v[0]:
+                    self.error = True
+                    self.response = v[1]
+                    return self.response
+                self.form = v[1]
+            else:
+                self.form = validator(self.form)
+
+    def create(self, request, modelName, involve_login_user=False, isDump=True, isBase64Decode=False):
         response = dict({"isLoggedIn": True})
         user = AuthorizeRequest(request.headers)
         if not user:
@@ -33,13 +46,6 @@ class BusinessLogic(ABC):
         try:
             db.session.add(model)
             db.session.commit()
-
-            if not post_insertion is None:
-                # if isinstance(post_insertion, types.ClassMethodDescriptorType):
-                isNotified = post_insertion(request, model, user)
-                # else:
-                #     pass
-
             response.update({"isCreated": True,
                              modelName.lower(): SF.getSchema(modelName, isMany=False).dump(model) if isDump else model,
                              "message": modelName + " created"})
@@ -68,7 +74,7 @@ class BusinessLogic(ABC):
             print(e)
             return False, 0
 
-    def delete_row(self, request, modelName, columnName, columnValue, verify_user=True, post_deletion=None):
+    def delete_row(self, request, modelName, columnName, columnValue, verify_user=True):
         response = dict({"isLoggedIn": True})
         user = AuthorizeRequest(request.headers)
         if not user:
@@ -89,10 +95,6 @@ class BusinessLogic(ABC):
         try:
             db.session.delete(data)
             db.session.commit()
-            if not post_deletion is None:
-                isD = post_deletion(request, data)
-
-
             response.update({"isDeleted": True, "message": modelName + " deleted"})
             return True, jsonify(response)
         except Exception as e:
@@ -102,8 +104,8 @@ class BusinessLogic(ABC):
                  })
             return True, jsonify(response)
 
-
-    def search_model(self, modelName, searchColumn, searchValue,query=None):
-        sql = "SELECT * FROM " + modelName + " WHERE "+searchColumn+" Like '%"+str(searchValue)+"%'"
-        isFound, result = self.get_by_custom_query(schemaName=modelName, query=sql if query is None else query, isMany=True, isDump=True)
+    def search_model(self, modelName, searchColumn, searchValue, query=None):
+        sql = "SELECT * FROM " + modelName + " WHERE " + searchColumn + " Like '%" + str(searchValue) + "%'"
+        isFound, result = self.get_by_custom_query(schemaName=modelName, query=sql if query is None else query,
+                                                   isMany=True, isDump=True)
         return result

@@ -1,11 +1,12 @@
 from application.Models.models import *
 
+
 class MF:
     @staticmethod
     def getModel(modelName):
         modelName = modelName.lower()
         if modelName == "post":
-            return Post()
+            return Post(), Post
         elif modelName == "user" or modelName == "users":
             return User()
         elif modelName == "list":
@@ -20,3 +21,5 @@ class MF:
             return Comment(), Comment
         elif modelName == "exchange":
             return Exchange(), Exchange
+        elif modelName == "notification":
+            return Notification(), Notification

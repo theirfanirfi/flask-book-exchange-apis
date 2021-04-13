@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/application/API/BusinessLogic/CommentBL.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/application/API/BusinessLogic/ListBL.py">
           <value>
             <Attribute>

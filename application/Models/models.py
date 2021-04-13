@@ -12,7 +12,8 @@ def load_user(user):
 
 class User(db.Model, UserMixin):
     __tablename__ = "users"
-    user_id = db.Column(db.Integer, primary_key=True)
+    obj = uuid.uuid4
+    user_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
     fullname = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
     token = db.Column(db.String(200), nullable=True)
@@ -23,7 +24,6 @@ class User(db.Model, UserMixin):
     location_latitude = db.Column(db.String(50), nullable=True)
     created_at = db.Column(db.String(50), default=str(datetime.now()))
     updated_at = db.Column(db.String(50), default=str(datetime.now()))
-
 
     def get_id(self):
         return (self.user_id)
@@ -43,7 +43,7 @@ class Post(db.Model):
     post_image = db.Column(db.Text, nullable=True)
     post_category = db.Column(db.Integer, nullable=True)
     is_admin_post = db.Column(db.Integer, default=0)
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
@@ -51,7 +51,7 @@ class Post(db.Model):
 class List(db.Model):
     list_id = db.Column(db.Integer, primary_key=True)
     list_title = db.Column(db.String(200), nullable=False)
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
@@ -63,7 +63,7 @@ class Book(db.Model):
     book_description = db.Column(db.Text, nullable=True)
     book_author = db.Column(db.Text, nullable=True)
     book_cover_image = db.Column(db.Text, nullable=True)
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.String(200), nullable=False)
     book_added_from = db.Column(db.String(200), nullable=False)
     is_available_for_exchange = db.Column(db.Integer, default=1)
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
@@ -71,9 +71,10 @@ class Book(db.Model):
 
 
 class Exchange(db.Model):
-    exchange_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
-    to_exchange_with_user_id = db.Column(db.Integer, nullable=False)
+    obj = uuid.uuid4
+    exchange_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
+    user_id = db.Column(db.String(200), nullable=False)
+    to_exchange_with_user_id = db.Column(db.String(200), nullable=False)
     book_to_be_sent_id = db.Column(db.Integer, nullable=False)
     book_to_be_received_id = db.Column(db.Integer, nullable=False)
     is_exchange_confirmed = db.Column(db.Integer, default=0)
@@ -87,30 +88,48 @@ class Stack(db.Model):
     stack_id = db.Column(db.String(200), primary_key=True, default=str(obj.hex))
     list_id = db.Column(db.Integer, nullable=False)
     book_id = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.String(200), nullable=False)
     created_at = db.Column(db.String(50), default=str(datetime.now()))
     updated_at = db.Column(db.String(50), default=str(datetime.now()))
 
 
 class Like(db.Model):
     __tablename__ = "likes"
-    obj = uuid.uuid4()
-    like_id = db.Column(db.String(200), primary_key=True, default=str(obj.hex))
+    obj = uuid.uuid4
+    like_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
     post_id = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.String(50), default=str(datetime.now()))
-    updated_at = db.Column(db.String(50), default=str(datetime.now()))
+    user_id = db.Column(db.String(200), nullable=False)
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
 
 class Comment(db.Model):
     __tablename__ = "comments"
     obj = uuid.uuid4
-    comment_id = db.Column(db.String(200), default=lambda: uuid.uuid4(),primary_key=True)
+    comment_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
     post_id = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.String(200), nullable=False)
     comment_text = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.String(50), default=str(datetime.now()))
-    updated_at = db.Column(db.String(50), default=str(datetime.now()))
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+
+
+class Notification(db.Model):
+    __tablename__ = "notifications"
+    obj = uuid.uuid4
+    notification_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
+    post_id = db.Column(db.Integer, nullable=False, default=0)
+    user_id = db.Column(db.String(200), nullable=False, default=0)
+    to_be_notified_user_id = db.Column(db.String(200), nullable=False, default=0)
+    exchange_id = db.Column(db.String(200), nullable=False, default=0)
+    is_like = db.Column(db.Integer, nullable=False, default=0)
+    is_comment = db.Column(db.Integer, nullable=False, default=0)
+    is_follow = db.Column(db.Integer, nullable=False, default=0)
+    is_exchange = db.Column(db.Integer, nullable=False, default=0)
+    book_to_be_provided_id = db.Column(db.Integer, nullable=False, default=0)
+    book_requested_id = db.Column(db.Integer, nullable=False, default=0)
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
 
 ######## schemas
@@ -172,6 +191,7 @@ class StackSchema(ma.Schema):
             if isinstance(prop, ColumnProperty)
         ]
 
+
 class StackSchema(ma.Schema):
     class Meta:
         fields = [
@@ -180,6 +200,7 @@ class StackSchema(ma.Schema):
             if isinstance(prop, ColumnProperty)
         ]
 
+
 class LikeSchema(ma.Schema):
     class Meta:
         fields = [
@@ -187,6 +208,7 @@ class LikeSchema(ma.Schema):
             for prop in class_mapper(Like).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
+
 
 class ExchangeSchema(ma.Schema):
     class Meta:
@@ -206,6 +228,7 @@ class ExchangeSchema(ma.Schema):
             if isinstance(prop, ColumnProperty)
         ]
 
+
 class CommentSchema(ma.Schema):
     class Meta:
         fields = [
@@ -222,3 +245,22 @@ class CommentSchema(ma.Schema):
         fields += ['isMine']
 
 
+class NotificationSchema(ma.Schema):
+    class Meta:
+        fields = [
+            prop.key
+            for prop in class_mapper(Notification).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+
+        fields += [
+            prop.key
+            for prop in class_mapper(User).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+        fields += [
+            prop.key
+            for prop in class_mapper(Book).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+        fields += ['isMine']

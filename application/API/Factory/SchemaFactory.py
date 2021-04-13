@@ -1,4 +1,6 @@
 from application.Models.models import *
+
+
 class SF:
     @staticmethod
     def getSchema(schemaName, isMany=True):
@@ -19,3 +21,5 @@ class SF:
             return CommentSchema(many=isMany)
         elif schemaName == "exchange":
             return ExchangeSchema(many=isMany)
+        elif schemaName == "notification":
+            return NotificationSchema(many=isMany)
