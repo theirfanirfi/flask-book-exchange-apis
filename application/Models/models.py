@@ -190,15 +190,21 @@ class StackSchema(ma.Schema):
             for prop in class_mapper(Stack).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
-
-
-class StackSchema(ma.Schema):
-    class Meta:
-        fields = [
+        fields = fields + [
             prop.key
-            for prop in class_mapper(Stack).iterate_properties
+            for prop in class_mapper(Book).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
+        fields += ['isMine']
+
+
+# class StackSchema(ma.Schema):
+#     class Meta:
+#         fields = [
+#             prop.key
+#             for prop in class_mapper(Stack).iterate_properties
+#             if isinstance(prop, ColumnProperty)
+#         ]
 
 
 class LikeSchema(ma.Schema):

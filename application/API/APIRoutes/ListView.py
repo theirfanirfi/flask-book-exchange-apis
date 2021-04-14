@@ -27,6 +27,8 @@ class APIListView(FlaskView):
         response.update({"isListCreated": isListCreated, "list": newList})
         return jsonify(response)
 
+    def get(self, id):
+        pass
     def delete(self, id):
         response = dict({"isLoggedIn": True})
         user = AuthorizeRequest(request.headers)

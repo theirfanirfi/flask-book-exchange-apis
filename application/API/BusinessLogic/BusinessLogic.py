@@ -9,7 +9,8 @@ import types
 
 
 class BusinessLogic(ABC):
-    def create(self, request, modelName, involve_login_user=False, isDump=True, isBase64Decode=False, post_insertion=None):
+    def create(self, request, modelName, involve_login_user=False, isDump=True, isBase64Decode=False,
+               post_insertion=None):
         response = dict({"isLoggedIn": True})
         user = AuthorizeRequest(request.headers)
         if not user:
@@ -60,6 +61,7 @@ class BusinessLogic(ABC):
         return True, SF.getSchema(modelName, isMany).dump(data) if isDump else data
 
     def get_by_custom_query(self, schemaName, query, isMany=False, isDump=False):
+        print(schemaName)
         try:
             sql = text(query)
             result = db.engine.execute(sql)
@@ -92,18 +94,86 @@ class BusinessLogic(ABC):
             if not post_deletion is None:
                 isD = post_deletion(request, data)
 
-
             response.update({"isDeleted": True, "message": modelName + " deleted"})
             return True, jsonify(response)
         except Exception as e:
+            print(e)
             response.update(
                 {"isDeleted": False,
                  "message": "Error occurred in deleting the " + modelName + ". Please try again"
                  })
             return True, jsonify(response)
 
-
-    def search_model(self, modelName, searchColumn, searchValue,query=None):
-        sql = "SELECT * FROM " + modelName + " WHERE "+searchColumn+" Like '%"+str(searchValue)+"%'"
-        isFound, result = self.get_by_custom_query(schemaName=modelName, query=sql if query is None else query, isMany=True, isDump=True)
+    def search_model(self, modelName, searchColumn, searchValue, query=None):
+        sql = "SELECT * FROM " + modelName + " WHERE " + searchColumn + " Like '%" + str(searchValue) + "%'"
+        isFound, result = self.get_by_custom_query(schemaName=modelName, query=sql if query is None else query,
+                                                   isMany=True, isDump=True)
         return result
+
+    def update_model(self, request,
+                     model_name,
+                     column_name=None,
+                     column_value=None,
+                     model_filters=None,
+                     form_filters=None,
+                     is_dump=True,
+                     is_many=False,
+                     verify_user=True,
+                     post_updation_filters=None,
+                     ):
+        response = dict({"isLoggedIn": True})
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return False, jsonify(notLoggedIn)
+
+        model = MF.getModel(model_name)
+        model_queried = None
+        model_obj = None
+        form = request.form
+        for field in form:
+            if form[field] == "":
+                return False, jsonify(invalidArgsResponse)
+
+        if not form_filters is None:
+            for f_filter in form_filters:
+                form = f_filter(form)
+
+        if not column_name is None and not column_value is None:
+            print('working')
+            if verify_user:
+                model_queried = model[1].query.filter(getattr(model[1], column_name) == column_value, getattr(model[1], "user_id") == user.user_id)
+            else:
+                model_queried = model[1].query.filter(getattr(model[1], column_name) == column_value)
+            if not model_queried.count() > 0:
+                print('not found')
+                response.update({"isError": True, "message": "Not found"})
+                return False, jsonify(response)
+
+            model_queried = model_queried.first()
+            print(model_queried.book_title)
+
+        if not model_filters is None:
+            for m_filter in model_filters:
+                model_queried = m_filter(model, model_queried, form)
+        else:
+            for field in form:
+                if not hasattr(model_queried, field):
+                    return False, jsonify(invalidArgsResponse)
+                setattr(model_queried, field, form[field])
+
+
+        try:
+            db.session.add(model_queried)
+            db.session.commit()
+            if not post_updation_filters is None:
+                for p_filter in post_updation_filters:
+                    p_filter(request, model, user)
+
+            response.update({"isUpdated": True,
+                             model_name.lower(): SF.getSchema(model_name, isMany=False).dump(model) if is_dump else model,
+                             "message": model_name + " updated"})
+            return True, jsonify(response)
+        except Exception as e:
+            print(e)
+            response.update({"isUpdated": False, model_name: False, "message": "Error occurred, please try again"})
+            return False, jsonify(response)

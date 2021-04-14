@@ -18,6 +18,14 @@ class StacksAPI(FlaskView):
         #     isDump=True)
         # return jsonify(books)
 
+    def get(self, id):
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return jsonify(notLoggedIn)
+
+        isFound, books = BF.getBL("stack").get_list_books(id, user)
+        return jsonify({"books": books})
+
     def post(self):
         isCreated, json_res = BF.getBL("stack").create(request, involve_login_user=True)
         return json_res

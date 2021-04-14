@@ -48,3 +48,30 @@ class BooksAPI(FlaskView, BusinessLogic):
                                                  verify_user=False)
         print(json_res)
         return json_res
+
+    @route("/delete_book/<string:id>/", methods=["DELETE"])
+    def delete_book(self, id):
+        print(id)
+        isDeleted, json_res = super().delete_row(request=request,
+                                                 modelName="book",
+                                                 columnName="book_id",
+                                                 columnValue=id,
+                                                 verify_user=True,
+                                                 post_deletion=self.delete_book_from_stack)
+        return json_res
+
+    def put(self, id):
+        isUpdated, json_res = super().update_model(request,
+                                                   model_name="book",
+                                                   column_name="book_id",
+                                                   column_value=id,
+                                                   )
+        return json_res
+
+    def delete_book_from_stack(self, request, data):
+        print('delete book from stack called: '+str(data.book_id))
+        return super().delete_row(request=request,
+                                                 modelName="stack",
+                                                 columnName="book_id",
+                                                 columnValue=data.book_id,
+                                                 verify_user=True)
