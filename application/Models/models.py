@@ -22,8 +22,8 @@ class User(db.Model, UserMixin):
     profile_image = db.Column(db.Text, nullable=True)
     location_longitude = db.Column(db.String(50), nullable=True)
     location_latitude = db.Column(db.String(50), nullable=True)
-    created_at = db.Column(db.String(50), default=str(datetime.now()))
-    updated_at = db.Column(db.String(50), default=str(datetime.now()))
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
     def get_id(self):
         return (self.user_id)
@@ -32,8 +32,8 @@ class User(db.Model, UserMixin):
 class Categories(db.Model):
     cat_id = db.Column(db.Integer, primary_key=True)
     cat_title = db.Column(db.String(200), nullable=False)
-    created_at = db.Column(db.String(50), default=str(datetime.now()))
-    updated_at = db.Column(db.String(50), default=str(datetime.now()))
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
 
 class Post(db.Model):
@@ -84,8 +84,8 @@ class Exchange(db.Model):
 
 class Stack(db.Model):
     __tablename__ = "stacks"
-    obj = uuid.uuid4()
-    stack_id = db.Column(db.String(200), primary_key=True, default=str(obj.hex))
+    obj = uuid.uuid4
+    stack_id = db.Column(db.String(200), primary_key=True, default=lambda: uuid.uuid4())
     list_id = db.Column(db.Integer, nullable=False)
     book_id = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.String(200), nullable=False)
