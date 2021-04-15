@@ -269,4 +269,4 @@ class NotificationSchema(ma.Schema):
             for prop in class_mapper(Book).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
-        fields += ['isMine']
+        fields += ['isMine','book_to_received', 'book_to_send']
