@@ -1,7 +1,6 @@
-from application.Models.models import Stack
-from application.API.utils import uploadPostImage
 from application import db
 from application.API.Factory.SchemaFactory import SF
+from application.API.Factory.ModelFactory import MF
 from application.API.BusinessLogic.BusinessLogic import BusinessLogic
 from application.API.utils import AuthorizeRequest, notLoggedIn
 from flask import jsonify
@@ -32,3 +31,32 @@ class NotificationsBL(BusinessLogic):
 
     def delete_row(self, request, id):
         return super().delete_row(request, "comment", "comment_id", id, True)
+
+    def exchange_confirmed_notifications(self, exchange):
+        model = MF.getModel("notification")[1]
+        notification = model.query.filter_by(exchange_id=exchange.exchange_id)
+        if not notification.count() > 0:
+            return False
+        notification = notification.first()
+        notification.is_exchange_confirmed = 1
+        notification.is_exchange_declined = 0
+        return self.save_notification(notification)
+
+    def exchange_declined_notifications(self, exchange):
+        model = MF.getModel("notification")[1]
+        notification = model.query.filter_by(exchange_id=exchange.exchange_id)
+        if not notification.count() > 0:
+            return False
+        notification = notification.first()
+        notification.is_exchange_confirmed = 0
+        notification.is_exchange_declined = 1
+        return self.save_notification(notification)
+
+    def save_notification(self, notification):
+        try:
+            db.session.add(notification)
+            db.session.commit()
+            return True, "Notification confirmed"
+        except Exception as e:
+            print(e)
+            return False, "Error occurred. Please try again"

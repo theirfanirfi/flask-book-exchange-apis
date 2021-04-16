@@ -57,7 +57,39 @@ class ExchangeAPI(FlaskView, BusinessLogic):
         # request.form['user_id'] = model.to_exchange_with_user_id
         request.form['to_be_notified_user_id'] = model.to_exchange_with_user_id
         request.form['is_exchange'] = 1
-        print("\n******* Notification Form ************* \n")
-        print(request.form)
         isCreated, json_res = super().create(request, modelName="notification", involve_login_user=True)
         return isCreated
+
+    @route("/approve_exchange/<string:exchange_id>/", methods=["POST", "PUT"])
+    def approve_exchange(self, exchange_id):
+        response = dict({"isLoggedIn": True})
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return False, jsonify(notLoggedIn)
+
+        exchange = BF.getBL("exchange").verify_exchange_request(exchange_id, user)
+        if not exchange:
+            return jsonify(invalidArgsResponse)
+
+        exchange.is_exchange_confirmed = 1
+        exchange.is_exchange_declined = 0
+        isConfirmed, message = BF.getBL("exchange").save_exchange(exchange, isConfirmed=True)
+        response.update({"isConfirmed": isConfirmed, "message": message})
+        return jsonify(response)
+
+    @route("/decline_exchange/<string:exchange_id>/", methods=["POST", "PUT"])
+    def decline_exchange(self, exchange_id):
+        response = dict({"isLoggedIn": True})
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return False, jsonify(notLoggedIn)
+
+        exchange = BF.getBL("exchange").verify_exchange_request(exchange_id, user)
+        if not exchange:
+            return jsonify(invalidArgsResponse)
+
+        exchange.is_exchange_confirmed = 0
+        exchange.is_exchange_declined = 1
+        isDeclined, message = BF.getBL("exchange").save_exchange(exchange)
+        response.update({"isDeclined": isDeclined, "message": message})
+        return jsonify(response)
