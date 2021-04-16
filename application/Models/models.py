@@ -147,10 +147,12 @@ class ChatMessage(db.Model):
     obj = uuid.uuid4
     message_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
     sender_id = db.Column(db.String(200), nullable=False)
+    message_text = db.Column(db.Text, nullable=False)
     receiver_id = db.Column(db.String(200), nullable=False)
     is_message = db.Column(db.Integer, default=0)
     is_exchange = db.Column(db.Integer, default=0)
     exchange_id = db.Column(db.String(200), default=0)
+    p_id = db.Column(db.String(200), default=0)
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
@@ -308,7 +310,8 @@ class MessageSchema(ma.Schema):
             for prop in class_mapper(User).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
-        fields += ['isMine', 'book_to_received', 'book_to_send']
+        fields += ['sender', 'receiver', 'amISender', 'book_to_be_received', 'book_to_be_send',
+                   '_id', 'text', 'createdAt', 'user']
 
 class ParticipantSchema(ma.Schema):
     class Meta:
@@ -323,4 +326,4 @@ class ParticipantSchema(ma.Schema):
             for prop in class_mapper(User).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
-        fields += ['isMine', 'book_to_received', 'book_to_send']
+        fields += ['amIUserOne', 'user_one', 'user_two']

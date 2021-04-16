@@ -61,7 +61,6 @@ class BusinessLogic(ABC):
         return True, SF.getSchema(modelName, isMany).dump(data) if isDump else data
 
     def get_by_custom_query(self, schemaName, query, isMany=False, isDump=False):
-        print(schemaName)
         try:
             sql = text(query)
             result = db.engine.execute(sql)

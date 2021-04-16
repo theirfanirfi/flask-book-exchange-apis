@@ -10,14 +10,16 @@ class ParticipantsAPI(FlaskView):
 
     def index(self):
         response = dict({"isLoggedIn": True})
+
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return jsonify(notLoggedIn)
+
+        isFound, participants = BF.getBL("participants").get_my_chat_participants(user)
+        response.update({"isFound": isFound,"participants": participants})
+
         return jsonify(response)
-        # books = BF.getBL("book").get_by_column(
-        #     modelName="book",
-        #     columnName="is_available_for_exchange",
-        #     columnValue=1,
-        #     isMany=True,
-        #     isDump=True)
-        # return jsonify(books)
+
 
     @route('/initiate_chat/<string:exchange_id>/', methods=["POST"])
     def initiate_chat(self, exchange_id):
@@ -39,6 +41,7 @@ class ParticipantsAPI(FlaskView):
         form['is_exchange'] = 1
         form['receiver_id'] = user.user_id
         form['sender_id'] = exchange.user_id
+        form['p_id'] = participants.p_id
         request.form = form
         isCreated, json_res = BF.getBL("messages").create_exchange_message(request)
         if isCreated:
