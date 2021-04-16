@@ -141,6 +141,7 @@ class ChatParticipant(db.Model):
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
+
 class ChatMessage(db.Model):
     __tablename__ = "chat_messages"
     obj = uuid.uuid4
@@ -289,6 +290,37 @@ class NotificationSchema(ma.Schema):
         fields += [
             prop.key
             for prop in class_mapper(Book).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+        fields += ['isMine', 'book_to_received', 'book_to_send']
+
+
+class MessageSchema(ma.Schema):
+    class Meta:
+        fields = [
+            prop.key
+            for prop in class_mapper(ChatMessage).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+
+        fields += [
+            prop.key
+            for prop in class_mapper(User).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+        fields += ['isMine', 'book_to_received', 'book_to_send']
+
+class ParticipantSchema(ma.Schema):
+    class Meta:
+        fields = [
+            prop.key
+            for prop in class_mapper(ChatParticipant).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+
+        fields += [
+            prop.key
+            for prop in class_mapper(User).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
         fields += ['isMine', 'book_to_received', 'book_to_send']

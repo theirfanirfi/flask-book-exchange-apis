@@ -23,3 +23,7 @@ class SF:
             return ExchangeSchema(many=isMany)
         elif schemaName == "notification":
             return NotificationSchema(many=isMany)
+        elif schemaName == "message" or schemaName == "messages":
+            return MessageSchema(many=isMany)
+        elif schemaName == "participants" or schemaName == "participant":
+            return ParticipantSchema(many=isMany)
