@@ -49,6 +49,7 @@ from application.API.APIRoutes.CommentsAPI import CommentsAPI
 from application.API.APIRoutes.ExchangeAPI import ExchangeAPI
 from application.API.APIRoutes.SearchAPI import SearchAPI
 from application.API.APIRoutes.NotificationsAPI import NotificationsAPI
+from application.API.APIRoutes.ParticipantsAPI import ParticipantsAPI
 #
 #
 # ProductsView.register(app, route_base='cpanel/products/')
@@ -64,5 +65,6 @@ CommentsAPI.register(app, route_base='/api/comment/')
 ExchangeAPI.register(app, route_base='/api/exchange/')
 SearchAPI.register(app, route_base='/api/search/')
 NotificationsAPI.register(app, route_base='/api/notification/')
+ParticipantsAPI.register(app, route_base='/api/participant/')
 
 

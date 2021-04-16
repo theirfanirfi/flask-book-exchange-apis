@@ -132,6 +132,28 @@ class Notification(db.Model):
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
 
+class ChatParticipant(db.Model):
+    __tablename__ = "chat_participants"
+    obj = uuid.uuid4
+    p_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
+    user_one_id = db.Column(db.String(200), nullable=False)
+    user_two_id = db.Column(db.String(200), nullable=False)
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+
+class ChatMessage(db.Model):
+    __tablename__ = "chat_messages"
+    obj = uuid.uuid4
+    message_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
+    sender_id = db.Column(db.String(200), nullable=False)
+    receiver_id = db.Column(db.String(200), nullable=False)
+    is_message = db.Column(db.Integer, default=0)
+    is_exchange = db.Column(db.Integer, default=0)
+    exchange_id = db.Column(db.String(200), default=0)
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+
+
 ######## schemas
 
 class UserSchema(ma.Schema):
@@ -269,4 +291,4 @@ class NotificationSchema(ma.Schema):
             for prop in class_mapper(Book).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
-        fields += ['isMine','book_to_received', 'book_to_send']
+        fields += ['isMine', 'book_to_received', 'book_to_send']

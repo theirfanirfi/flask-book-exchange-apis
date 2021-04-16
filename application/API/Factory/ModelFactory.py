@@ -23,3 +23,7 @@ class MF:
             return Exchange(), Exchange
         elif modelName == "notification":
             return Notification(), Notification
+        elif modelName == "participants" or modelName == "participant":
+            return ChatParticipant(), ChatParticipant
+        elif modelName == "message" or modelName == "messages":
+            return ChatMessage(), ChatMessage

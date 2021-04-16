@@ -7,6 +7,7 @@ from application.API.BusinessLogic.CommentBL import CommentBL
 from application.API.BusinessLogic.ExchangeBL import ExchangeBL
 from application.API.BusinessLogic.StacksBL import StacksBL
 from application.API.BusinessLogic.NotificationsBL import NotificationsBL
+from application.API.BusinessLogic.ParticipantBL import ParticipantBL
 class BF:
     @staticmethod
     def getBL(blName):
@@ -29,6 +30,8 @@ class BF:
             return StacksBL()
         elif blName == "notification" or blName == "notifications":
             return NotificationsBL()
+        elif blName == "participants" or blName == "participant":
+            return ParticipantBL()
 
 
 

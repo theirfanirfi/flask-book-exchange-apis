@@ -2,6 +2,7 @@ from application.Models.models import Book
 from application.API.utils import uploadPostImage
 from application import db
 from application.API.Factory.SchemaFactory import SF
+from application.API.Factory.ModelFactory import MF
 from application.API.BusinessLogic.BusinessLogic import BusinessLogic
 
 class ExchangeBL(BusinessLogic):
@@ -9,6 +10,14 @@ class ExchangeBL(BusinessLogic):
     def getBooks(self, user, offset=0, isDump=False):
         books = Book.query.filter_by(is_available_for_exchange=1).all()
         return books if not isDump else SF.getSchema("book",isMany=True).dump(books)
+
+    def get_exchange(self, id, isDump=False):
+        exchange = MF.getModel("exchange")[1].query.filter_by(exchange_id=id)
+        if not exchange.count() > 0:
+            return False
+
+        exchange = exchange.first()
+        return exchange if not isDump else SF.getSchema("exchange",isMany=False).dump(exchange)
 
     def add_list(self, title, isbn, desc, cover_image,author, source, user, isDump=False):
         book = Book()

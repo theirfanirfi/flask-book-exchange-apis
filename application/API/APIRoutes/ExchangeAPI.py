@@ -53,7 +53,11 @@ class ExchangeAPI(FlaskView, BusinessLogic):
         request.form['exchange_id'] = model.exchange_id
         request.form['book_to_be_provided_id'] = model.book_to_be_sent_id
         request.form['book_requested_id'] = model.book_to_be_received_id
-        request.form['user_id'] = model.to_exchange_with_user_id
+        # @involve_login_user is set to True, so it will do the job.
+        # request.form['user_id'] = model.to_exchange_with_user_id
+        request.form['to_be_notified_user_id'] = model.to_exchange_with_user_id
         request.form['is_exchange'] = 1
-        isCreated, json_res = super().create(request, "notification", True)
+        print("\n******* Notification Form ************* \n")
+        print(request.form)
+        isCreated, json_res = super().create(request, modelName="notification", involve_login_user=True)
         return isCreated
