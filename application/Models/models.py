@@ -78,6 +78,7 @@ class Exchange(db.Model):
     book_to_be_sent_id = db.Column(db.Integer, nullable=False)
     book_to_be_received_id = db.Column(db.Integer, nullable=False)
     is_exchange_confirmed = db.Column(db.Integer, default=0)
+    exchange_message = db.Column(db.Text)
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
@@ -310,8 +311,8 @@ class MessageSchema(ma.Schema):
             for prop in class_mapper(User).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
-        fields += ['sender', 'receiver', 'amISender', 'book_to_be_received', 'book_to_be_send',
-                   '_id', 'text', 'createdAt', 'user']
+        fields += ['sender', 'receiver', 'amISender', 'book_to_be_received', 'book_to_be_sent',
+                   '_id', 'text', 'createdAt', 'user','exchange_message']
 
 class ParticipantSchema(ma.Schema):
     class Meta:

@@ -16,7 +16,7 @@ class ChatMessagesBL(BusinessLogic):
 
     def get_chat_messages(self, participants, user):
 
-        query = "SELECT chat_messages.*, " \
+        query = "SELECT chat_messages.*,exchange.exchange_message, " \
                 "chat_messages.message_id as _id, chat_messages.message_text as text, " \
                 "chat_messages.created_at as createdAt, " \
                 "JSON_OBJECT('_id', sender.user_id, 'name', sender.fullname, " \
