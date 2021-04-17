@@ -2,7 +2,7 @@ from application.Models.models import Book
 from application import db
 from application.API.Factory.SchemaFactory import SF
 from application.API.Factory.ModelFactory import MF
-from application.API.Factory.BLFactory import BF
+from application.API.BusinessLogic.NotificationsBL import NotificationsBL
 from application.API.BusinessLogic.BusinessLogic import BusinessLogic
 
 class ExchangeBL(BusinessLogic):
@@ -52,7 +52,7 @@ class ExchangeBL(BusinessLogic):
 
     def verify_exchange_request(self, exchange_id, user):
         model = MF.getModel("exchange")[1]
-        is_there_any_such_exchange = model.query.filter_by(exchange=exchange_id,
+        is_there_any_such_exchange = model.query.filter_by(exchange_id=exchange_id,
                                                            to_exchange_with_user_id=user.user_id)
         if not is_there_any_such_exchange.count() > 0:
             return False
@@ -60,13 +60,20 @@ class ExchangeBL(BusinessLogic):
         exchange = is_there_any_such_exchange.first()
         return exchange
 
-    def save_exchange(self, exchange, isConfirmed=False):
+    def save_exchange(self, exchange, isConfirmed=False, isWithDrawn=False):
         try:
             db.session.add(exchange)
             db.session.commit()
-            if isConfirmed:
-                BF.getBL("notification").exchange_confirmed_notifications(exchange)
-            BF.getBL("notification").exchange_declined_notifications(exchange)
+            bl = NotificationsBL()
+            if not isWithDrawn:
+                print('withdrawn is '+str(isWithDrawn)+ ' isconfirmed is: '+str(isConfirmed))
+                if isConfirmed:
+                    bl.exchange_confirmed_notifications(exchange)
+                else:
+                    bl.exchange_declined_notifications(exchange)
+            else:
+                bl.exchange_withdrawn_notifications(exchange)
+
             return True, "Exchange confirmed"
         except Exception as e:
             print(e)

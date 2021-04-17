@@ -33,6 +33,8 @@ class NotificationsBL(BusinessLogic):
         return super().delete_row(request, "comment", "comment_id", id, True)
 
     def exchange_confirmed_notifications(self, exchange):
+        print('exchange confirmed '+exchange.exchange_id)
+
         model = MF.getModel("notification")[1]
         notification = model.query.filter_by(exchange_id=exchange.exchange_id)
         if not notification.count() > 0:
@@ -43,6 +45,7 @@ class NotificationsBL(BusinessLogic):
         return self.save_notification(notification)
 
     def exchange_declined_notifications(self, exchange):
+        print('exchange declined')
         model = MF.getModel("notification")[1]
         notification = model.query.filter_by(exchange_id=exchange.exchange_id)
         if not notification.count() > 0:
@@ -50,6 +53,16 @@ class NotificationsBL(BusinessLogic):
         notification = notification.first()
         notification.is_exchange_confirmed = 0
         notification.is_exchange_declined = 1
+        return self.save_notification(notification)
+
+    def exchange_withdrawn_notifications(self, exchange):
+        model = MF.getModel("notification")[1]
+        notification = model.query.filter_by(exchange_id=exchange.exchange_id)
+        if not notification.count() > 0:
+            return False
+        notification = notification.first()
+        notification.is_exchange_confirmed = 0
+        notification.is_exchange_declined = 0
         return self.save_notification(notification)
 
     def save_notification(self, notification):
