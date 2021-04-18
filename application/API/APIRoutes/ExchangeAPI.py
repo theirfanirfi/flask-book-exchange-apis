@@ -25,7 +25,8 @@ class ExchangeAPI(FlaskView, BusinessLogic):
 
     def post(self):
         isCreated, json_res = super().create(request=request, modelName="exchange", involve_login_user=True,
-                                             post_insertion=self.exchange_notification)
+                                             post_insertion=[self.exchange_notification,
+                                                             self.create_exchange_request_in_chat])
         return json_res
 
     def delete(self, id):
@@ -34,7 +35,8 @@ class ExchangeAPI(FlaskView, BusinessLogic):
                                                  columnName="exchange_id",
                                                  columnValue=id,
                                                  verify_user=True,
-                                                 post_deletion=self.delete_exchange_notification)
+                                                 post_deletion=[self.delete_exchange_notification,
+                                                                self.delete_exchange_request_chat])
         return json_res
 
     def delete_exchange_notification(self, req, model_data):
@@ -42,7 +44,17 @@ class ExchangeAPI(FlaskView, BusinessLogic):
                                                  modelName="notification",
                                                  columnName="exchange_id",
                                                  columnValue=model_data.exchange_id,
-                                                 verify_user=True)
+                                                 verify_user=True,
+                                                 )
+        return isDeleted
+
+    def delete_exchange_request_chat(self, req, model_data):
+        isDeleted, json_res = super().delete_row(request=req,
+                                                 modelName="message",
+                                                 columnName="exchange_id",
+                                                 columnValue=model_data.exchange_id,
+                                                 verify_user=False,
+                                                 )
         return isDeleted
 
     def exchange_notification(self, request, model, user):
@@ -59,6 +71,10 @@ class ExchangeAPI(FlaskView, BusinessLogic):
         request.form['is_exchange'] = 1
         isCreated, json_res = super().create(request, modelName="notification", involve_login_user=True)
         return isCreated
+
+    def create_exchange_request_in_chat(self, request, model, user):
+        print('exchange_id: '+model.exchange_id)
+        return BF.getBL("participant").initiate_chat(request, model.exchange_id, user)
 
     @route("/approve_exchange/<string:exchange_id>/")
     def approve_exchange(self, exchange_id):

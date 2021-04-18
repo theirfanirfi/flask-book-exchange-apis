@@ -36,10 +36,11 @@ class BusinessLogic(ABC):
             db.session.commit()
 
             if not post_insertion is None:
-                # if isinstance(post_insertion, types.ClassMethodDescriptorType):
-                isNotified = post_insertion(request, model, user)
-                # else:
-                #     pass
+                for post_func in post_insertion:
+                    # if isinstance(post_insertion, types.ClassMethodDescriptorType):
+                    isNotified = post_func(request, model, user)
+                    # else:
+                    #     pass
 
             response.update({"isCreated": True,
                              modelName.lower(): SF.getSchema(modelName, isMany=False).dump(model) if isDump else model,
@@ -91,7 +92,8 @@ class BusinessLogic(ABC):
             db.session.delete(data)
             db.session.commit()
             if not post_deletion is None:
-                isD = post_deletion(request, data)
+                for post_func in post_deletion:
+                    isD = post_func(request, data)
 
             response.update({"isDeleted": True, "message": modelName + " deleted"})
             return True, jsonify(response)

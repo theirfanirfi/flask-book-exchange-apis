@@ -2,7 +2,10 @@ from application import db
 from application.API.Factory.SchemaFactory import SF
 from application.API.Factory.ModelFactory import MF
 from application.API.BusinessLogic.BusinessLogic import BusinessLogic
+from application.API.BusinessLogic.ExchangeBL import ExchangeBL
+from application.API.BusinessLogic.ChatMessagesBL import ChatMessagesBL
 from sqlalchemy import and_, or_
+from flask import jsonify
 
 
 class ParticipantBL(BusinessLogic):
@@ -46,5 +49,33 @@ class ParticipantBL(BusinessLogic):
         except Exception as e:
             print(e)
             return False
+
+    def initiate_chat(self, request, exchange_id, user):
+        response = dict({"isLoggedIn": True})
+        exchange = ExchangeBL().get_exchange(exchange_id, False)
+        if not exchange:
+            return False
+
+        # the participants of the chat are received.
+        participants = self.get_participant(exchange.to_exchange_with_user_id, user.user_id)
+        # now, the exchange request message will be created in the chat
+        form = dict()
+        form['exchange_id'] = exchange.exchange_id
+        form['is_exchange'] = 1
+        form['receiver_id'] = exchange.to_exchange_with_user_id
+        form['sender_id'] = user.user_id
+        form['message_text'] = "Exchange request"
+        form['p_id'] = participants.p_id
+        request.form = form
+
+        isCreated, json_res = ChatMessagesBL().create_exchange_message(request)
+
+        if isCreated:
+            response.update(
+                {"isCreated": True,
+                 "participants": SF.getSchema("participants",isMany=False).dump(participants)
+                 })
+            return jsonify(response)
+        return jsonify({"isCreated": False, "message": "Error occurred, please try again "})
 
 
