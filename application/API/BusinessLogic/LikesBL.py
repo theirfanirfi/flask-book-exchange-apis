@@ -8,7 +8,7 @@ from application.API.BusinessLogic.BusinessLogic import BusinessLogic
 class LikesBL(BusinessLogic):
 
     def create(self, request, involve_login_user=True):
-        return super().create(request, "like", involve_login_user, post_insertion=self.like_notification)
+        return super().create(request, "like", involve_login_user, post_insertion=[self.like_notification])
 
     def delete_row(self, request, id):
         return super().delete_row(request, "like", "post_id", id, True)

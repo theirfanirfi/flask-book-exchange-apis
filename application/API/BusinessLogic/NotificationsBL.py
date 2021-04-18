@@ -27,7 +27,7 @@ class NotificationsBL(BusinessLogic):
 
     def create(self, request, involve_login_user=True):
         return super().create(request, "comment", involve_login_user, isBase64Decode=True,
-                              post_insertion=self.comment_notification)
+                              post_insertion=[self.comment_notification])
 
     def delete_row(self, request, id):
         return super().delete_row(request, "comment", "comment_id", id, True)

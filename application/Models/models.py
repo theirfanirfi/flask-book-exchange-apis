@@ -316,7 +316,8 @@ class MessageSchema(ma.Schema):
             if isinstance(prop, ColumnProperty)
         ]
         fields += ['sender', 'receiver', 'amISender', 'book_to_be_received', 'book_to_be_sent',
-                   '_id', 'text', 'createdAt', 'user','exchange_message', 'is_exchange_declined', 'is_exchange_confirmed']
+                   '_id', 'text', 'createdAt', 'user', 'exchange_message', 'is_exchange_declined',
+                   'is_exchange_confirmed', 'to_exchange_with_user_id']
 
 class ParticipantSchema(ma.Schema):
     class Meta:

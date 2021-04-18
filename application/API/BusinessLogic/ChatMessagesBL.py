@@ -18,6 +18,7 @@ class ChatMessagesBL(BusinessLogic):
 
         query = "SELECT chat_messages.*,exchange.exchange_message, " \
                 "exchange.is_exchange_declined, exchange.is_exchange_confirmed, " \
+                "exchange.to_exchange_with_user_id, " \
                 "chat_messages.message_id as _id, chat_messages.message_text as text, " \
                 "chat_messages.created_at as createdAt, " \
                 "JSON_OBJECT('_id', sender.user_id, 'name', sender.fullname, " \
