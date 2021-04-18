@@ -150,7 +150,7 @@ class ChatParticipant(db.Model):
 class ChatMessage(db.Model):
     __tablename__ = "chat_messages"
     obj = uuid.uuid4
-    message_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
+    message_id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.String(200), nullable=False)
     message_text = db.Column(db.Text, nullable=False)
     receiver_id = db.Column(db.String(200), nullable=False)
@@ -316,7 +316,7 @@ class MessageSchema(ma.Schema):
             if isinstance(prop, ColumnProperty)
         ]
         fields += ['sender', 'receiver', 'amISender', 'book_to_be_received', 'book_to_be_sent',
-                   '_id', 'text', 'createdAt', 'user','exchange_message']
+                   '_id', 'text', 'createdAt', 'user','exchange_message', 'is_exchange_declined', 'is_exchange_confirmed']
 
 class ParticipantSchema(ma.Schema):
     class Meta:

@@ -21,7 +21,6 @@ class MessagesAPI(FlaskView):
         #
         # return jsonify(response)
 
-
     def get(self, id):
         response = dict({"isLoggedIn": True})
         user = AuthorizeRequest(request.headers)
@@ -35,9 +34,26 @@ class MessagesAPI(FlaskView):
         isFound, messages = BF.getBL("message").get_chat_messages(participants, user)
         return jsonify({"isFound": isFound, "messages": messages})
 
+    @route('/send/<string:participant_id>/', methods=["POST"])
+    def send(self, participant_id):
+        response = dict({"isLoggedIn": True})
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return jsonify(notLoggedIn)
 
-    # def delete(self, id):
-    #     print(id)
-    #     isDeleted, json_res = BF.getBL("stack").delete_row(request, id)
-    #     print(json_res)
-    #     return json_res
+        participants = BF.getBL("participants").get_participant_by_id(participant_id, user.user_id)
+        if not participants:
+            return jsonify(invalidArgsResponse)
+
+        receiver_id = participants.user_two_id if not participants.user_two_id == user.user_id else participants.user_one_id
+
+        form = dict()
+        form['message_text'] = b64_to_data(request.form['text'])
+        form['receiver_id'] = receiver_id
+        form['sender_id'] = user.user_id
+        form['is_message'] = 1
+        form['p_id'] = participants.p_id
+        request.form = form
+
+        isSent, json_res = BF.getBL("message").create(request,"messages",involve_login_user=False, isDump=True)
+        return json_res

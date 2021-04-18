@@ -17,6 +17,7 @@ class ChatMessagesBL(BusinessLogic):
     def get_chat_messages(self, participants, user):
 
         query = "SELECT chat_messages.*,exchange.exchange_message, " \
+                "exchange.is_exchange_declined, exchange.is_exchange_confirmed, " \
                 "chat_messages.message_id as _id, chat_messages.message_text as text, " \
                 "chat_messages.created_at as createdAt, " \
                 "JSON_OBJECT('_id', sender.user_id, 'name', sender.fullname, " \
@@ -38,7 +39,7 @@ class ChatMessagesBL(BusinessLogic):
                 "LEFT JOIN exchange on exchange.exchange_id = chat_messages.exchange_id " \
                 "LEFT JOIN book as book_to_be_sent on book_to_be_sent.book_id = exchange.book_to_be_sent_id " \
                 "LEFT JOIN book as book_to_be_received on book_to_be_received.book_id = exchange.book_to_be_received_id " \
-                "WHERE p_id = '"+str(participants.p_id)+"'"
+                "WHERE p_id = '"+str(participants.p_id)+"' ORDER BY chat_messages.message_id DESC"
 
         return super().get_by_custom_query(schemaName="message", query=query, isMany=True, isDump=True)
 
