@@ -8,7 +8,7 @@ class MF:
         if modelName == "post":
             return Post(), Post
         elif modelName == "user" or modelName == "users":
-            return User()
+            return User(), User
         elif modelName == "list":
             return List()
         elif modelName == "book":

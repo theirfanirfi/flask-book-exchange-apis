@@ -140,18 +140,15 @@ class BusinessLogic(ABC):
                 form = f_filter(form)
 
         if not column_name is None and not column_value is None:
-            print('working')
             if verify_user:
                 model_queried = model[1].query.filter(getattr(model[1], column_name) == column_value, getattr(model[1], "user_id") == user.user_id)
             else:
                 model_queried = model[1].query.filter(getattr(model[1], column_name) == column_value)
             if not model_queried.count() > 0:
-                print('not found')
                 response.update({"isError": True, "message": "Not found"})
                 return False, jsonify(response)
 
             model_queried = model_queried.first()
-            print(model_queried.book_title)
 
         if not model_filters is None:
             for m_filter in model_filters:

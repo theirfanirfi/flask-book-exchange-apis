@@ -9,6 +9,7 @@ from application.API.BusinessLogic.StacksBL import StacksBL
 from application.API.BusinessLogic.NotificationsBL import NotificationsBL
 from application.API.BusinessLogic.ParticipantBL import ParticipantBL
 from application.API.BusinessLogic.ChatMessagesBL import ChatMessagesBL
+from application.API.BusinessLogic.LocationBL import LocationBL
 class BF:
     @staticmethod
     def getBL(blName):
@@ -35,6 +36,8 @@ class BF:
             return ParticipantBL()
         elif blName == "message" or blName == "messages":
             return ChatMessagesBL()
+        elif blName == "location":
+            return LocationBL()
 
 
 
