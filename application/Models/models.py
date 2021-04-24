@@ -29,6 +29,16 @@ class User(db.Model, UserMixin):
         return (self.user_id)
 
 
+class Follower(db.Model, UserMixin):
+    __tablename__ = "followers"
+    obj = uuid.uuid4
+    follow_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
+    follower_user_id = db.Column(db.String(200), nullable=False)
+    followed_user_id = db.Column(db.String(200), nullable=False)
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+
+
 class Categories(db.Model):
     cat_id = db.Column(db.Integer, primary_key=True)
     cat_title = db.Column(db.String(200), nullable=False)
@@ -318,6 +328,7 @@ class MessageSchema(ma.Schema):
         fields += ['sender', 'receiver', 'amISender', 'book_to_be_received', 'book_to_be_sent',
                    '_id', 'text', 'createdAt', 'user', 'exchange_message', 'is_exchange_declined',
                    'is_exchange_confirmed', 'to_exchange_with_user_id']
+
 
 class ParticipantSchema(ma.Schema):
     class Meta:

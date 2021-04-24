@@ -10,14 +10,13 @@ from application.API.BusinessLogic.NotificationsBL import NotificationsBL
 from application.API.BusinessLogic.ParticipantBL import ParticipantBL
 from application.API.BusinessLogic.ChatMessagesBL import ChatMessagesBL
 from application.API.BusinessLogic.LocationBL import LocationBL
+from application.API.BusinessLogic.UserBL import UserBL
 class BF:
     @staticmethod
     def getBL(blName):
         blName = blName.lower()
         if blName == "post":
             return PostBL()
-        elif blName == "user" or blName == "users":
-            return User()
         elif blName == "list":
             return ListBL()
         elif blName == "book":
@@ -38,6 +37,8 @@ class BF:
             return ChatMessagesBL()
         elif blName == "location":
             return LocationBL()
+        elif blName == "user":
+            return UserBL()
 
 
 

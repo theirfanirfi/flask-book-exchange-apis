@@ -27,3 +27,5 @@ class MF:
             return ChatParticipant(), ChatParticipant
         elif modelName == "message" or modelName == "messages":
             return ChatMessage(), ChatMessage
+        elif modelName == "follower" or modelName == "followers":
+            return Follower(), Follower
