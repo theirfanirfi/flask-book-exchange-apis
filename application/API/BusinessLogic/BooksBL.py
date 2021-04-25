@@ -4,13 +4,14 @@ from application import db
 from application.API.Factory.SchemaFactory import SF
 from application.API.BusinessLogic.BusinessLogic import BusinessLogic
 
+
 class BooksBL(BusinessLogic):
 
     def getBooks(self, user, offset=0, isDump=False):
         books = Book.query.filter_by(is_available_for_exchange=1).all()
-        return books if not isDump else SF.getSchema("book",isMany=True).dump(books)
+        return books if not isDump else SF.getSchema("book", isMany=True).dump(books)
 
-    def get_book_by_isbn(self, isbn, isDump=False,user=None):
+    def get_book_by_isbn(self, isbn, isDump=False, user=None):
         checkExistence = None
 
         if user is None:
@@ -19,11 +20,11 @@ class BooksBL(BusinessLogic):
             checkExistence = Book.query.filter_by(book_isbn=isbn, user_id=user.user_id)
 
         if checkExistence.count() > 0:
-            book =checkExistence.first()
-            return True, book if not isDump else SF.getSchema("book",isMany=False).dump(book)
+            book = checkExistence.first()
+            return True, book if not isDump else SF.getSchema("book", isMany=False).dump(book)
         return False, "Book not found"
 
-    def add_list(self, title, isbn, desc, cover_image,author, source, user, isDump=False):
+    def add_list(self, title, isbn, desc, cover_image, author, source, user, isDump=False):
 
         book = Book()
         book.book_isbn = isbn
@@ -41,9 +42,8 @@ class BooksBL(BusinessLogic):
         except Exception as e:
             return False, None
 
-
     def delete_book(self, book_id):
-        book = self.get_by_column("book","book_id", book_id)
+        book = self.get_by_column("book", "book_id", book_id)
         if not book:
             return False
 
@@ -54,3 +54,7 @@ class BooksBL(BusinessLogic):
         except Exception as e:
             print(e)
             return False, "Error occurred in deleting the list. Please try again"
+
+    def get_user_books(self, user_id, is_dump=True, is_many=True):
+        books = Book.query.filter_by(user_id=user_id).all()
+        return SF.getSchema("book", is_many).dump(books) if is_dump else books

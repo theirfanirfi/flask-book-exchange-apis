@@ -14,13 +14,13 @@ class BooksAPI(FlaskView, BusinessLogic):
             return False, jsonify(notLoggedIn)
 
         query = "SELECT book.*, " \
-                " 111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS("+user.location_latitude+")) * COS(RADIANS(users.location_latitude))"\
-         " * COS(RADIANS("+user.location_longitude+" - users.location_longitude)) + SIN(RADIANS("+user.location_latitude+")) * SIN(RADIANS(users.location_latitude))))) AS distance_in_km, " \
-                "users.fullname, users.profile_image, users.location_longitude, users.location_latitude" \
-                " FROM book LEFT JOIN users on users.user_id = book.user_id WHERE book.is_available_for_exchange = 1"
-                #"AND book.user_id != "+str(user.user_id)
-        isFetched, books = super().get_by_custom_query("book", query, isMany=True,isDump=True)
-        response.update({"isFetched": isFetched, "books":books})
+                " 111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(" + user.location_latitude + ")) * COS(RADIANS(users.location_latitude))" \
+                                                                                             " * COS(RADIANS(" + user.location_longitude + " - users.location_longitude)) + SIN(RADIANS(" + user.location_latitude + ")) * SIN(RADIANS(users.location_latitude))))) AS distance_in_km, " \
+                                                                                                                                                                                                                     "users.fullname, users.profile_image, users.location_longitude, users.location_latitude" \
+                                                                                                                                                                                                                     " FROM book LEFT JOIN users on users.user_id = book.user_id WHERE book.is_available_for_exchange = 1"
+        # "AND book.user_id != "+str(user.user_id)
+        isFetched, books = super().get_by_custom_query("book", query, isMany=True, isDump=True)
+        response.update({"isFetched": isFetched, "books": books})
         return jsonify(response)
 
     def post(self):
@@ -29,9 +29,8 @@ class BooksAPI(FlaskView, BusinessLogic):
         if not user:
             return False, jsonify(notLoggedIn)
 
-
         if 'book_isbn' in request.form:
-            isBookFound, book = BF.getBL("book").get_book_by_isbn(request.form['book_isbn'], isDump=True,user=user)
+            isBookFound, book = BF.getBL("book").get_book_by_isbn(request.form['book_isbn'], isDump=True, user=user)
             if isBookFound:
                 book = book
                 return jsonify({"isLoggedIn": True, "isCreated": True, "book": book, "message": "Book added"})
@@ -69,9 +68,42 @@ class BooksAPI(FlaskView, BusinessLogic):
         return json_res
 
     def delete_book_from_stack(self, request, data):
-        print('delete book from stack called: '+str(data.book_id))
+        print('delete book from stack called: ' + str(data.book_id))
         return super().delete_row(request=request,
-                                                 modelName="stack",
-                                                 columnName="book_id",
-                                                 columnValue=data.book_id,
-                                                 verify_user=True)
+                                  modelName="stack",
+                                  columnName="book_id",
+                                  columnValue=data.book_id,
+                                  verify_user=True)
+
+    def user_books(self, id):
+        response = dict({"isLoggedIn": True})
+        user_id = id
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return jsonify(notLoggedIn)
+
+        if id == "me":
+            user_id = user.user_id
+
+        if id == "me":
+            query = "SELECT book.*," \
+                    " 111.111 * " \
+                    "DEGREES(ACOS(LEAST(1.0, COS(RADIANS(" + user.location_latitude + ")) * COS(RADIANS(users.location_latitude)) * COS(RADIANS(" \
+                    + user.location_longitude + " - users.location_longitude)) + SIN(RADIANS(" + user.location_latitude + ")) * SIN(RADIANS(users.location_latitude))))) AS distance_in_km, " \
+                                                                                                                          "users.fullname, users.profile_image, users.location_longitude, users.location_latitude " \
+                                                                                                                          "FROM book LEFT JOIN users on users.user_id = book.user_id " \
+                                                                                                                          "WHERE " \
+                                                                                                                          "book.user_id = " + str(user_id)
+        else:
+            query = "SELECT book.*," \
+                    " 111.111 * " \
+                    "DEGREES(ACOS(LEAST(1.0, COS(RADIANS(" + user.location_latitude + ")) * COS(RADIANS(users.location_latitude)) * COS(RADIANS(" \
+                    + user.location_longitude + " - users.location_longitude)) + SIN(RADIANS(" + user.location_latitude + ")) * SIN(RADIANS(users.location_latitude))))) AS distance_in_km, " \
+                                                                                                                          "users.fullname, users.profile_image, users.location_longitude, users.location_latitude " \
+                                                                                                                          "FROM book LEFT JOIN users on users.user_id = book.user_id " \
+                                                                                                                      "WHERE book.is_available_for_exchange = 1 " \
+                                                                                                                      "AND book.user_id = "+str(user_id)
+        # "AND book.user_id != "+str(user.user_id)
+        isFetched, books = super().get_by_custom_query("book", query, isMany=True, isDump=True)
+        response.update({"isFetched": isFetched, "books": books})
+        return jsonify(response)

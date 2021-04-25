@@ -27,7 +27,7 @@ class ProfileAPI(FlaskView):
         bl = BF.getBL("user")
 
         # if type(id) == int:
-        if str(id) == "0":
+        if str(id) == "me":
             user_id = user.user_id
 
         print('user_id: '+str(user_id))

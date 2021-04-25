@@ -32,10 +32,9 @@ class APIPostView(FlaskView):
         if not user:
             return jsonify(notLoggedIn)
 
-        if id == "0":
+        if str(id) == "me":
             user_id = user.user_id
 
-        print('user_id: '+user_id)
         post = BF.getBL("post").get_user_posts(user, user_id)
         response.update({"posts": post})
         return jsonify(response)
