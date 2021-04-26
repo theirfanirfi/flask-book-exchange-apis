@@ -44,8 +44,8 @@ class FollowAPI(FlaskView):
         if not follower.count() > 0:
             return jsonify({"isLoggedIn": True, "isUnFollowed": False, "message": "You have not followed each other"})
 
+        follower = follower.first()
         try:
-            follower = follower.first()
             db.session.delete(follower)
             db.session.commit()
             return jsonify({"isLoggedIn": True, "isUnFollowed": True, "message": "Unfollowed"})

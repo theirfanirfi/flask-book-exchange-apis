@@ -52,6 +52,18 @@ class ParticipantsAPI(FlaskView):
             return jsonify(response)
         return jsonify({"isCreated": False, "message": "Error occurred, please try again "})
 
+    def chat(self, id):
+        ##id = user_id come from profile page
+        response = dict({"isLoggedIn": True})
+
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return jsonify(notLoggedIn)
+
+        participants = BF.getBL("participants").get_participant(id, user.user_id)
+        response.update({"participant": SF.getSchema("participants",isMany=False).dump(participants),
+                         "isFound": True})
+        return jsonify(response)
 
     # def delete(self, id):
     #     print(id)
