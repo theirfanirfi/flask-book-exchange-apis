@@ -25,19 +25,16 @@ class ProfileAPI(FlaskView):
             return jsonify(notLoggedIn)
 
         bl = BF.getBL("user")
-
-        # if type(id) == int:
         if str(id) == "me":
             user_id = user.user_id
 
-        print('user_id: '+str(user_id))
 
         profile = bl.get_user(user_id)
         if not profile:
             return jsonify({"isLoggedIn": True,"isFound": False, "message": "invalid profile"})
 
         if profile.user_id == user.user_id:
-            return jsonify({"isLoggedIn": True,"isFound": True, "isFollowed": False,"profile": {
+            return jsonify({"isLoggedIn": True,"isFound": True,"isMe": True, "isFollowed": False,"profile": {
                 "fullname": profile.fullname,
                 "profile_image": profile.profile_image,
                 "user_id": profile.user_id,
@@ -48,6 +45,7 @@ class ProfileAPI(FlaskView):
             {
                 "isLoggedIn": True,
                 "isFound": True,
+                "isMe": False,
                 "isFollowed": BF.getBL("user").check_have_i_followed(user, profile),
                 "profile": {
                     "fullname": profile.fullname,

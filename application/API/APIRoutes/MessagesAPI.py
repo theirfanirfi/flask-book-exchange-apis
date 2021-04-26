@@ -22,6 +22,7 @@ class MessagesAPI(FlaskView):
         # return jsonify(response)
 
     def get(self, id):
+        print(id)
         response = dict({"isLoggedIn": True})
         user = AuthorizeRequest(request.headers)
         if not user:

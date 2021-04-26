@@ -53,6 +53,7 @@ from application.API.APIRoutes.ParticipantsAPI import ParticipantsAPI
 from application.API.APIRoutes.MessagesAPI import MessagesAPI
 from application.API.APIRoutes.LocationAPI import LocationAPI
 from application.API.APIRoutes.ProfileAPI import ProfileAPI
+from application.API.APIRoutes.FollowAPI import FollowAPI
 #
 #
 # ProductsView.register(app, route_base='cpanel/products/')
@@ -71,5 +72,7 @@ NotificationsAPI.register(app, route_base='/api/notification/')
 ParticipantsAPI.register(app, route_base='/api/participant/')
 LocationAPI.register(app, route_base='/api/location/')
 ProfileAPI.register(app, route_base='/api/profile/')
+MessagesAPI.register(app, route_base='/api/messages/')
+FollowAPI.register(app, route_base='/api/follow/')
 
 

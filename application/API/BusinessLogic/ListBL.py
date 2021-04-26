@@ -9,6 +9,10 @@ class ListBL:
         user_lists = List.query.filter_by(user_id=user.user_id).all()
         return user_lists if not isDump else SF.getSchema("list", isMany=True).dump(user_lists)
 
+    def getLists_by_user_id(self, user_id, isDump=False):
+        user_lists = List.query.filter_by(user_id=user_id).all()
+        return user_lists if not isDump else SF.getSchema("list", isMany=True).dump(user_lists)
+
     def add_list(self, title, user, isDump=False):
         newList = List()
         newList.list_title = title

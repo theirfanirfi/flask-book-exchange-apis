@@ -29,6 +29,21 @@ class APIListView(FlaskView):
 
     def get(self, id):
         pass
+
+    def user(self, id):
+        user_id = id
+        response = dict({"isLoggedIn": True})
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return jsonify(notLoggedIn)
+
+        if str(id) == "me":
+            user_id = user.user_id
+
+        lists = BF.getBL("list").getLists_by_user_id(user_id, True)
+        response.update({"lists": lists})
+        return jsonify(response)
+
     def delete(self, id):
         response = dict({"isLoggedIn": True})
         user = AuthorizeRequest(request.headers)
