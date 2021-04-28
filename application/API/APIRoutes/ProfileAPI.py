@@ -55,13 +55,18 @@ class ProfileAPI(FlaskView):
                     "followed": bl.count_followed(profile),
                 }})
 
+    def search(self, search_term):
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return jsonify(notLoggedIn)
+
+        users = BF.getBL("user").search_users(search_term)
+        return jsonify({"isLoggedIn": True,"users": users})
 
     def post(self):
         isCreated, json_res = BF.getBL("stack").create(request, involve_login_user=True)
         return json_res
 
     def delete(self, id):
-        print(id)
         isDeleted, json_res = BF.getBL("stack").delete_row(request, id)
-        print(json_res)
         return json_res

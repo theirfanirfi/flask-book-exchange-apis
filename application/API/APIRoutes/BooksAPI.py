@@ -17,7 +17,8 @@ class BooksAPI(FlaskView, BusinessLogic):
                 " 111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(" + user.location_latitude + ")) * COS(RADIANS(users.location_latitude))" \
                                                                                              " * COS(RADIANS(" + user.location_longitude + " - users.location_longitude)) + SIN(RADIANS(" + user.location_latitude + ")) * SIN(RADIANS(users.location_latitude))))) AS distance_in_km, " \
                                                                                                                                                                                                                      "users.fullname, users.profile_image, users.location_longitude, users.location_latitude" \
-                                                                                                                                                                                                                     " FROM book LEFT JOIN users on users.user_id = book.user_id WHERE book.is_available_for_exchange = 1"
+                                                                                                                                                                                                                     " FROM book LEFT JOIN users on users.user_id = book.user_id WHERE book.is_available_for_exchange = 1 " \
+                                                                                                                                                                                                                     "AND book.user_id != '"+str(user.user_id)+"'"
         # "AND book.user_id != "+str(user.user_id)
         isFetched, books = super().get_by_custom_query("book", query, isMany=True, isDump=True)
         response.update({"isFetched": isFetched, "books": books})
@@ -93,7 +94,7 @@ class BooksAPI(FlaskView, BusinessLogic):
                                                                                                                           "users.fullname, users.profile_image, users.location_longitude, users.location_latitude " \
                                                                                                                           "FROM book LEFT JOIN users on users.user_id = book.user_id " \
                                                                                                                           "WHERE " \
-                                                                                                                          "book.user_id = " + str(user_id)
+                                                                                                                          "book.user_id = '" + str(user_id)+"'"
         else:
             query = "SELECT book.*," \
                     " 111.111 * " \
@@ -102,7 +103,7 @@ class BooksAPI(FlaskView, BusinessLogic):
                                                                                                                           "users.fullname, users.profile_image, users.location_longitude, users.location_latitude " \
                                                                                                                           "FROM book LEFT JOIN users on users.user_id = book.user_id " \
                                                                                                                       "WHERE book.is_available_for_exchange = 1 " \
-                                                                                                                      "AND book.user_id = "+str(user_id)
+                                                                                                                      "AND book.user_id = '" + str(user_id)+"'"
         # "AND book.user_id != "+str(user.user_id)
         isFetched, books = super().get_by_custom_query("book", query, isMany=True, isDump=True)
         response.update({"isFetched": isFetched, "books": books})

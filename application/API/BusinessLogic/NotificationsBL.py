@@ -21,7 +21,7 @@ class NotificationsBL(BusinessLogic):
                 "book_to_be_received.book_id = exchange.`book_to_be_received_id` " \
                 "LEFT JOIN book as book_to_be_sent on " \
                 "book_to_be_sent.book_id = exchange.`book_to_be_sent_id`" \
-                "WHERE to_be_notified_user_id =" + str(user.user_id)
+                "WHERE to_be_notified_user_id ='" + str(user.user_id)+"'"
 
         return super().get_by_custom_query("notification", query, isMany=True, isDump=True)
 

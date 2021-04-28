@@ -33,7 +33,7 @@ class ChatMessagesBL(BusinessLogic):
                 "sender.profile_image ) as sender, " \
                 "JSON_OBJECT('_id', receiver.user_id, 'name', receiver.fullname, 'avatar', " \
                 "receiver.profile_image ) as receiver, " \
-                "IF(sender.user_id = "+str(user.user_id)+", true, false) as amISender " \
+                "IF(sender.user_id = '"+str(user.user_id)+"', true, false) as amISender " \
                 "FROM chat_messages " \
                 "LEFT JOIN users as sender on sender.user_id = chat_messages.sender_id " \
                 "LEFT JOIN users as receiver on receiver.user_id = chat_messages.receiver_id " \

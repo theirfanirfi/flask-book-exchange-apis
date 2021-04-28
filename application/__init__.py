@@ -54,6 +54,7 @@ from application.API.APIRoutes.MessagesAPI import MessagesAPI
 from application.API.APIRoutes.LocationAPI import LocationAPI
 from application.API.APIRoutes.ProfileAPI import ProfileAPI
 from application.API.APIRoutes.FollowAPI import FollowAPI
+from application.API.APIRoutes.AuthAPI import AuthAPI
 #
 #
 # ProductsView.register(app, route_base='cpanel/products/')
@@ -74,5 +75,6 @@ LocationAPI.register(app, route_base='/api/location/')
 ProfileAPI.register(app, route_base='/api/profile/')
 MessagesAPI.register(app, route_base='/api/messages/')
 FollowAPI.register(app, route_base='/api/follow/')
+AuthAPI.register(app, route_base='/api/auth/')
 
 

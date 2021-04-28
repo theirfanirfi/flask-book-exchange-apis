@@ -33,6 +33,7 @@ class CommentsAPI(FlaskView):
 
     def post(self):
         isCreated, json_res = BF.getBL("comment").create(request, involve_login_user=True)
+        print(json_res)
         return json_res
 
     def delete(self, id):

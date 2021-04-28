@@ -16,10 +16,10 @@ class ParticipantBL(BusinessLogic):
                 "user_one.fullname, 'user_one_profile_image', user_one.profile_image) as user_one, " \
                 "JSON_OBJECT('user_two_id', user_two.user_id, 'user_two_fullname', user_two.fullname, " \
                 "'user_two_profile_image', user_one.profile_image) as user_two, " \
-                "IF(user_one.user_id="+str(user.user_id)+",true,false) as amIUserOne FROM chat_participants " \
+                "IF(user_one.user_id='"+str(user.user_id)+"',true,false) as amIUserOne FROM chat_participants " \
                 "LEFT JOIN users as user_one on user_one.user_id = chat_participants.user_one_id " \
                 "LEFT JOIN users as user_two on user_two.user_id = chat_participants.user_two_id " \
-                "WHERE user_one_id = "+str(user.user_id)+" OR user_two_id = "+str(user.user_id)
+                "WHERE user_one_id = '"+str(user.user_id)+"' OR user_two_id = '"+str(user.user_id)+"'"
         return super().get_by_custom_query(schemaName="participants",query=query, isMany=True, isDump=True)
 
     def get_participant(self, user_one_id, user_two_id):
