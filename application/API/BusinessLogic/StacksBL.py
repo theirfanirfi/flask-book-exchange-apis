@@ -14,7 +14,7 @@ class StacksBL(BusinessLogic):
         return super().delete_row(request, "stack", "stack_id", id, True)
 
     def get_list_books(self, list_id, user):
-        sql = "SELECT *, IF(stacks.user_id="+str(user.user_id)+",true,false) as isMine FROM stacks  " \
+        sql = "SELECT *, IF(stacks.user_id='"+str(user.user_id)+"',true,false) as isMine FROM stacks  " \
               "LEFT JOIN book on book.book_id = stacks.book_id WHERE list_id = " + str(
             list_id)
         return super().get_by_custom_query(schemaName="stack", query=sql, isMany=True, isDump=True)
