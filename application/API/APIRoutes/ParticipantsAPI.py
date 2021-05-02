@@ -36,6 +36,9 @@ class ParticipantsAPI(FlaskView):
         # the participants of the chat are received.
         participants = BF.getBL("participants").get_participant(exchange.user_id, user.user_id)
         # now, the exchange request message will be created in the chat
+        print('user user_id: '+user.user_id)
+        print('exchange user_id: '+exchange.user_id)
+
         form = dict()
         form['exchange_id'] = exchange.exchange_id
         form['is_exchange'] = 1
