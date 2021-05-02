@@ -235,7 +235,7 @@ class StackSchema(ma.Schema):
             for prop in class_mapper(Book).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
-        fields += ['isMine']
+        fields += ['isMine', 'distance_in_km']
 
 
 # class StackSchema(ma.Schema):
