@@ -23,6 +23,9 @@ class ParticipantBL(BusinessLogic):
         return super().get_by_custom_query(schemaName="participants",query=query, isMany=True, isDump=True)
 
     def get_participant(self, user_one_id, user_two_id):
+        print('get_participant user one: '+user_one_id)
+        print('get_participant user two: '+user_two_id)
+
         model = MF.getModel("participants")[1]
         participants = model.query.filter(or_(and_(model.user_one_id==user_one_id, model.user_two_id==user_two_id),
                                               and_(model.user_two_id==user_one_id, model.user_one_id==user_two_id)))
