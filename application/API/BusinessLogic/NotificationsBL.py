@@ -11,6 +11,7 @@ class NotificationsBL(BusinessLogic):
     def get_notifications(self, user):
 
         query = "SELECT notifications.*,users.fullname, users.profile_image, " \
+                "IF(exchange.to_exchange_with_user_id='"+user.user_id+"', true, false) as amIExchanger," \
                 "JSON_OBJECT('book_cover_image', book_to_be_received.book_cover_image," \
                 " 'book_title', book_to_be_received.book_title) as book_to_received, " \
                 " JSON_OBJECT('book_cover_image', book_to_be_sent.book_cover_image, " \
