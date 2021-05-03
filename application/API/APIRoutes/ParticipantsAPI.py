@@ -45,6 +45,7 @@ class ParticipantsAPI(FlaskView):
         form['receiver_id'] = exchange.to_exchange_with_user_id
         form['sender_id'] = exchange.user_id
         form['p_id'] = participants.p_id
+        form['message_text'] = 'Exchange Request'
         request.form = form
         isCreated, json_res = BF.getBL("messages").create_exchange_message(request)
         if isCreated:
