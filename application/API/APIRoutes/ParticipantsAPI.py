@@ -34,16 +34,16 @@ class ParticipantsAPI(FlaskView):
             return jsonify(invalidArgsResponse)
 
         # the participants of the chat are received.
-        participants = BF.getBL("participants").get_participant(exchange.to_exchange_with_user_id, user.user_id)
+        participants = BF.getBL("participants").get_participant(exchange.to_exchange_with_user_id, exchange.user_id)
         # now, the exchange request message will be created in the chat
-        print('user user_id: '+user.user_id)
+        print('user user_id: '+exchange.user_id)
         print('exchange user_id: '+exchange.to_exchange_with_user_id)
 
         form = dict()
         form['exchange_id'] = exchange.exchange_id
         form['is_exchange'] = 1
         form['receiver_id'] = exchange.to_exchange_with_user_id
-        form['sender_id'] = user.user_id
+        form['sender_id'] = exchange.user_id
         form['p_id'] = participants.p_id
         request.form = form
         isCreated, json_res = BF.getBL("messages").create_exchange_message(request)
