@@ -45,11 +45,11 @@ class BusinessLogic(ABC):
             response.update({"isCreated": True,
                              modelName.lower(): SF.getSchema(modelName, isMany=False).dump(model) if isDump else model,
                              "message": modelName + " created"})
-            return True, jsonify(response)
+            return True, jsonify(response) if is_jsonify else response
         except Exception as e:
             print(e)
             response.update({"isCreated": False, modelName: False, "message": "Error occurred, please try again"})
-            return False, jsonify(response) if is_jsonify else response
+            return False, jsonify(response)
 
     def get_by_column(self, modelName, columnName, columnValue, isMany=False, isDump=False):
         model = MF.getModel(modelName)
