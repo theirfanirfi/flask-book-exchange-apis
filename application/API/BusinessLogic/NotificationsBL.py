@@ -36,25 +36,39 @@ class NotificationsBL(BusinessLogic):
     def exchange_confirmed_notifications(self, exchange):
         print('exchange confirmed '+exchange.exchange_id)
 
-        model = MF.getModel("notification")[1]
-        notification = model.query.filter_by(exchange_id=exchange.exchange_id)
+        model = MF.getModel("notification")
+        notification = model[1].query.filter_by(exchange_id=exchange.exchange_id)
         if not notification.count() > 0:
             return False
         notification = notification.first()
         notification.is_exchange_confirmed = 1
         notification.is_exchange_declined = 0
-        return self.save_notification(notification)
+        n = model[0]
+        n.is_exchange_notification = 1
+        n.is_exchange_confirmed = 1
+        n.is_exchange_declined = 0
+        n.exchange_id = notification.exchange_id
+        n.to_be_notified_user_id = notification.user_id
+        self.save_notification(notification)
+        return self.save_notification(n)
 
     def exchange_declined_notifications(self, exchange):
         print('exchange declined')
-        model = MF.getModel("notification")[1]
-        notification = model.query.filter_by(exchange_id=exchange.exchange_id)
+        model = MF.getModel("notification")
+        notification = model[1].query.filter_by(exchange_id=exchange.exchange_id)
         if not notification.count() > 0:
             return False
         notification = notification.first()
         notification.is_exchange_confirmed = 0
         notification.is_exchange_declined = 1
-        return self.save_notification(notification)
+        n = model[0]
+        n.is_exchange_notification = 1
+        n.is_exchange_confirmed = 0
+        n.is_exchange_declined = 1
+        n.exchange_id = notification.exchange_id
+        n.to_be_notified_user_id = notification.user_id
+        self.save_notification(notification)
+        return self.save_notification(n)
 
     def exchange_withdrawn_notifications(self, exchange):
         model = MF.getModel("notification")[1]

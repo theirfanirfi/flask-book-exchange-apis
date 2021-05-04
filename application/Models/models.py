@@ -138,6 +138,7 @@ class Notification(db.Model):
     is_comment = db.Column(db.Integer, nullable=False, default=0)
     is_follow = db.Column(db.Integer, nullable=False, default=0)
     is_exchange = db.Column(db.Integer, nullable=False, default=0)
+    is_exchange_notification = db.Column(db.Integer, nullable=False, default=0)
     is_exchange_confirmed = db.Column(db.Integer, nullable=False, default=0)
     is_exchange_declined = db.Column(db.Integer, nullable=False, default=0)
     book_to_be_provided_id = db.Column(db.Integer, nullable=False, default=0)
