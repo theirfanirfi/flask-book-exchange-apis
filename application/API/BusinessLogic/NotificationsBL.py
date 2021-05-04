@@ -50,8 +50,8 @@ class NotificationsBL(BusinessLogic):
         n.is_exchange_confirmed = 1
         n.is_exchange_declined = 0
         n.exchange_id = notification.exchange_id
-        n.user_id = notification.to_exchange_with_user_id
-        n.to_exchange_with_user_id = notification.user_id
+        n.user_id = notification.to_be_notified_user_id
+        n.to_be_notified_user_id = notification.user_id
         return self.save_notification(n)
 
     def exchange_declined_notifications(self, exchange):
@@ -70,8 +70,8 @@ class NotificationsBL(BusinessLogic):
         n.is_exchange_confirmed = 0
         n.is_exchange_declined = 1
         n.exchange_id = notification.exchange_id
-        n.user_id = notification.to_exchange_with_user_id
-        n.to_exchange_with_user_id = notification.user_id
+        n.user_id = notification.to_be_notified_user_id
+        n.to_be_notified_user_id = notification.user_id
         return self.save_notification(n)
 
     def exchange_withdrawn_notifications(self, exchange):
