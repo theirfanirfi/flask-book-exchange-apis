@@ -17,7 +17,7 @@ class NotificationsBL(BusinessLogic):
                 " JSON_OBJECT('book_cover_image', book_to_be_sent.book_cover_image, " \
                 "'book_title', book_to_be_sent.book_title) as book_to_send " \
                 "FROM notifications LEFT JOIN users on users.user_id = notifications.user_id " \
-                "LEFT JOIN exchange on exchange.exchange_id = notifications.exchange_id AND exchange.is_exchange_confirmed = 0 AND exchange.is_exchange_declined = 0" \
+                "LEFT JOIN exchange on exchange.exchange_id = notifications.exchange_id AND exchange.is_exchange_confirmed = 0 AND exchange.is_exchange_declined = 0 " \
                 "LEFT JOIN book as book_to_be_received on " \
                 "book_to_be_received.book_id = exchange.`book_to_be_received_id` " \
                 "LEFT JOIN book as book_to_be_sent on " \
