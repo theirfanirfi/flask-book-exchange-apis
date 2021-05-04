@@ -2,7 +2,6 @@ from flask_classful import FlaskView, route
 from flask import request, jsonify
 from application.API.utils import AuthorizeRequest, notLoggedIn, b64_to_data, invalidArgsResponse
 from application.API.Factory.BLFactory import BF
-from application.API.BusinessLogic.BusinessLogic import BusinessLogic
 
 
 class CommentsAPI(FlaskView):
@@ -33,7 +32,8 @@ class CommentsAPI(FlaskView):
 
     def post(self):
         isCreated, json_res = BF.getBL("comment").create(request, involve_login_user=True)
-        print('comment id: '+json_res.comment_id)
+        print('comment id: '+json_res['comment'])
+        print('comment id: '+json_res.comment)
         print('user id: '+json_res.user_id)
         return json_res
 
