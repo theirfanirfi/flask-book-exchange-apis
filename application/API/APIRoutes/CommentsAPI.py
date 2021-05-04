@@ -41,8 +41,8 @@ class CommentsAPI(FlaskView):
             comment = db.engine.execute(sql)
             if comment.rowcount > 0:
                 print('found ')
-                return jsonify({"isLoggedIn": True,"isCreated": True,
-                                "comment": SF.getSchema("comment", isMany=False).dump(comment)})
+                return jsonify({"isLoggedIn": True, "isCreated": True,
+                                "comment": SF.getSchema("comment", isMany=True).dump(comment)})
             else:
                 return jsonify({"isLoggedIn": True, "isCreated": False, "comment": comment})
         else:
