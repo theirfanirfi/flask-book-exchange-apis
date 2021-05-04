@@ -2,7 +2,9 @@ from flask_classful import FlaskView, route
 from flask import request, jsonify
 from application.API.utils import AuthorizeRequest, notLoggedIn, b64_to_data, invalidArgsResponse
 from application.API.Factory.BLFactory import BF
-
+from application.API.Factory.SchemaFactory import SF
+from sqlalchemy import text
+from application import db
 
 class CommentsAPI(FlaskView):
 
@@ -32,11 +34,19 @@ class CommentsAPI(FlaskView):
 
     def post(self):
         isCreated, json_res = BF.getBL("comment").create(request, involve_login_user=True)
-        print(json_res)
-        print(json_res['comment'].comment_id)
-        # print('comment id: '+json_res.comment)
-        # print('user id: '+json_res.user_id)
-        return json_res
+        if isCreated:
+            sql = text("SELECT comments.*,users.fullname, users.profile_image FROM comments "
+                       "LEFT JOIN users on users.user_id = comments.user_id "
+                       "WHERE comment_id = '"+str(json_res['comment'].comment_id)+"'")
+            comment = db.engine.execute(sql)
+            if comment.rowcount > 0:
+                print('found ')
+                return jsonify({"isLoggedIn": True,"isCreated": True,
+                                "comment": SF.getSchema("comment", isMany=False).dump(comment)})
+            else:
+                return jsonify({"isLoggedIn": True, "isCreated": False, "comment": comment})
+        else:
+            return json_res
 
     def delete(self, id):
         print(id)
