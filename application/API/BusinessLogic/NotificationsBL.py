@@ -17,12 +17,12 @@ class NotificationsBL(BusinessLogic):
                 " JSON_OBJECT('book_cover_image', book_to_be_sent.book_cover_image, " \
                 "'book_title', book_to_be_sent.book_title) as book_to_send " \
                 "FROM notifications LEFT JOIN users on users.user_id = notifications.user_id " \
-                "LEFT JOIN exchange on exchange.exchange_id = notifications.exchange_id " \
+                "LEFT JOIN exchange on exchange.exchange_id = notifications.exchange_id" \
                 "LEFT JOIN book as book_to_be_received on " \
                 "book_to_be_received.book_id = exchange.`book_to_be_received_id` " \
                 "LEFT JOIN book as book_to_be_sent on " \
                 "book_to_be_sent.book_id = exchange.`book_to_be_sent_id`" \
-                "WHERE to_be_notified_user_id ='" + str(user.user_id)+"' AND notifications.is_exchange_confirmed = 0 AND notifications.is_exchange_declined = 0"
+                "WHERE to_be_notified_user_id ='" + str(user.user_id)+"'"
 
         return super().get_by_custom_query("notification", query, isMany=True, isDump=True)
 
@@ -36,39 +36,25 @@ class NotificationsBL(BusinessLogic):
     def exchange_confirmed_notifications(self, exchange):
         print('exchange confirmed '+exchange.exchange_id)
 
-        model = MF.getModel("notification")
-        notification = model[1].query.filter_by(exchange_id=exchange.exchange_id)
+        model = MF.getModel("notification")[1]
+        notification = model.query.filter_by(exchange_id=exchange.exchange_id)
         if not notification.count() > 0:
             return False
         notification = notification.first()
         notification.is_exchange_confirmed = 1
         notification.is_exchange_declined = 0
-        n = model[0]
-        n.is_exchange_notification = 1
-        n.is_exchange_confirmed = 1
-        n.is_exchange_declined = 0
-        n.exchange_id = notification.exchange_id
-        n.to_be_notified_user_id = notification.user_id
-        self.save_notification(notification)
-        return self.save_notification(n)
+        return self.save_notification(notification)
 
     def exchange_declined_notifications(self, exchange):
         print('exchange declined')
-        model = MF.getModel("notification")
-        notification = model[1].query.filter_by(exchange_id=exchange.exchange_id)
+        model = MF.getModel("notification")[1]
+        notification = model.query.filter_by(exchange_id=exchange.exchange_id)
         if not notification.count() > 0:
             return False
         notification = notification.first()
         notification.is_exchange_confirmed = 0
         notification.is_exchange_declined = 1
-        n = model[0]
-        n.is_exchange_notification = 1
-        n.is_exchange_confirmed = 0
-        n.is_exchange_declined = 1
-        n.exchange_id = notification.exchange_id
-        n.to_be_notified_user_id = notification.user_id
-        self.save_notification(notification)
-        return self.save_notification(n)
+        return self.save_notification(notification)
 
     def exchange_withdrawn_notifications(self, exchange):
         model = MF.getModel("notification")[1]
