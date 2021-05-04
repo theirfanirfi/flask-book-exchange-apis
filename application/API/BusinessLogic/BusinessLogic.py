@@ -10,7 +10,7 @@ import types
 
 class BusinessLogic(ABC):
     def create(self, request, modelName, involve_login_user=False, isDump=True, isBase64Decode=False,
-               post_insertion=None):
+               post_insertion=None, is_jsonify=True):
         response = dict({"isLoggedIn": True})
         user = AuthorizeRequest(request.headers)
         if not user:
@@ -49,7 +49,7 @@ class BusinessLogic(ABC):
         except Exception as e:
             print(e)
             response.update({"isCreated": False, modelName: False, "message": "Error occurred, please try again"})
-            return False, jsonify(response)
+            return False, jsonify(response) if is_jsonify else response
 
     def get_by_column(self, modelName, columnName, columnValue, isMany=False, isDump=False):
         model = MF.getModel(modelName)
