@@ -69,6 +69,23 @@ class ExchangeBL(BusinessLogic):
                 print('withdrawn is '+str(isWithDrawn)+ ' isconfirmed is: '+str(isConfirmed))
                 if isConfirmed:
                     bl.exchange_confirmed_notifications(exchange)
+                    book_to_be_sent = self.get_by_column("book", "book_id", exchange.book_to_be_sent_id)
+                    book_to_be_received = self.get_by_column("book", "book_id", exchange.book_to_be_received_id)
+                    if book_to_be_sent:
+                        book_to_be_sent.is_available_for_exchange = 0
+                        try:
+                            db.session.add(book_to_be_sent)
+                            db.session.commit()
+                        except Exception as e:
+                            print(e)
+
+                    if book_to_be_received:
+                        book_to_be_received.is_available_for_exchange = 0
+                        try:
+                            db.session.add(book_to_be_received)
+                            db.session.commit()
+                        except Exception as e:
+                            print(e)
                 else:
                     bl.exchange_declined_notifications(exchange)
             else:
