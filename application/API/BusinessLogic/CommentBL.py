@@ -15,7 +15,7 @@ class CommentBL(BusinessLogic):
         return super().get_by_custom_query("comment", query, isMany=True, isDump=True)
 
     def create(self, request, involve_login_user=True):
-        return super().create(request, "comment", involve_login_user, isBase64Decode=True,
+        return super().create(request, "comment", involve_login_user, isDump=False, isBase64Decode=True,
                               post_insertion=[self.comment_notification])
 
     def delete_row(self, request, id):
