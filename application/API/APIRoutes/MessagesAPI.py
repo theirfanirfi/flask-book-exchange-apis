@@ -2,9 +2,7 @@ from flask_classful import FlaskView, route
 from flask import request, jsonify
 from application.API.utils import AuthorizeRequest, notLoggedIn, b64_to_data, invalidArgsResponse
 from application.API.Factory.BLFactory import BF
-from application.API.BusinessLogic.BusinessLogic import BusinessLogic
-from application.API.Factory.SchemaFactory import SF
-
+from datetime import datetime
 
 class MessagesAPI(FlaskView):
 
@@ -54,7 +52,9 @@ class MessagesAPI(FlaskView):
         form['sender_id'] = user.user_id
         form['is_message'] = 1
         form['p_id'] = participants.p_id
+        form['created_at'] = str(datetime.now())[:19]
+        form['updated_at'] = str(datetime.now())[:19]
         request.form = form
 
-        isSent, json_res = BF.getBL("message").create(request,"messages",involve_login_user=False, isDump=True)
+        isSent, json_res = BF.getBL("message").create(request, "messages", involve_login_user=False, isDump=True)
         return json_res
