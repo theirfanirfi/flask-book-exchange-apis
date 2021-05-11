@@ -70,6 +70,7 @@ class StacksAPI(FlaskView):
                  "stack": SF.getSchema("stack", isMany=False).dump(stack)
                  })
         except Exception as e:
+            print(e)
             return jsonify({"isCreated": False, "isError":True, "message": "Error occurred. Please try again later."})
 
     def delete(self, id):
