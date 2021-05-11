@@ -64,7 +64,7 @@ class APIListView(FlaskView):
             lists_book = MF.getModel("book")[1].query.filter_by(book_id=stack.book_id, user_id=user.user_id)
             if lists_book.count() > 0:
                 toDelete=True
-                session.delete(lists_book)
+                session.delete(lists_book.first())
         if toDelete:
             session.commit()
 
