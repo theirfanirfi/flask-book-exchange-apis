@@ -48,6 +48,7 @@ class StacksAPI(FlaskView):
         model = book_model[0]
         model.is_available_for_exchange = 0
         model.book_title = form['book_title']
+        model.user_id = user.user_id
         model.book_author = form['book_author']
         model.book_cover_image = form['book_cover_image']
         model.book_isbn = form['book_isbn']
