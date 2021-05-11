@@ -38,14 +38,18 @@ class StacksAPI(FlaskView):
         fields_to_validate = ['book_title', 'book_author',
                               'book_cover_image', 'book_isbn',
                               'book_added_from', 'book_description', 'list_id']
-        print(form)
+
         for field in fields_to_validate:
             if not field in form:
                 return jsonify(invalidArgsResponse)
             if form[field] == "":
                 return jsonify(invalidArgsResponse)
-
         model = book_model[0]
+        book_check = book_model[1].query.filter_by(book_title=form['book_title'], book_author=form['book_author'],
+                                                   book_isbn=form['book_isbn'], user_id=user.user_id)
+        if book_check.count() > 0:
+            return jsonify({"isCreated": False, "isError":True, "message": "Book is already added."})
+
         model.is_available_for_exchange = 0
         model.book_title = form['book_title']
         model.user_id = user.user_id
