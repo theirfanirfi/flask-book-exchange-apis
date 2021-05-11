@@ -57,7 +57,7 @@ class BooksAPI(FlaskView, BusinessLogic):
                                                  columnName="book_id",
                                                  columnValue=id,
                                                  verify_user=True,
-                                                 post_deletion=self.delete_book_from_stack)
+                                                 post_deletion=[self.delete_book_from_stack])
         return json_res
 
     def put(self, id):
