@@ -55,6 +55,7 @@ from application.API.APIRoutes.LocationAPI import LocationAPI
 from application.API.APIRoutes.ProfileAPI import ProfileAPI
 from application.API.APIRoutes.FollowAPI import FollowAPI
 from application.API.APIRoutes.AuthAPI import AuthAPI
+from application.API.APIRoutes.BuyBookAPI import BuyBookAPI
 #
 #
 # ProductsView.register(app, route_base='cpanel/products/')
@@ -76,5 +77,6 @@ ProfileAPI.register(app, route_base='/api/profile/')
 MessagesAPI.register(app, route_base='/api/messages/')
 FollowAPI.register(app, route_base='/api/follow/')
 AuthAPI.register(app, route_base='/api/auth/')
+BuyBookAPI.register(app, route_base='/api/buy/')
 
 

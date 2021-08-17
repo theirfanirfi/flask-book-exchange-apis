@@ -29,3 +29,5 @@ class MF:
             return ChatMessage(), ChatMessage
         elif modelName == "follower" or modelName == "followers":
             return Follower(), Follower
+        elif modelName == "buy":
+            return buy_book(), buy_book

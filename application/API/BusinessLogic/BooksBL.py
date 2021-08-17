@@ -24,6 +24,41 @@ class BooksBL(BusinessLogic):
             return True, book if not isDump else SF.getSchema("book", isMany=False).dump(book)
         return False, "Book not found"
 
+    def make_book_by_isbn_for_sale(self, isbn, selling_price, isDump=False, user=None):
+        if user is None:
+            checkExistence = Book.query.filter_by(book_isbn=isbn)
+        else:
+            checkExistence = Book.query.filter_by(book_isbn=isbn, user_id=user.user_id)
+
+        if checkExistence.count() > 0:
+            book = checkExistence.first()
+            book.selling_price = float(selling_price)
+            book.is_for_sale = 1
+            try:
+                db.session.add(book)
+                db.session.commit()
+                return True, book if not isDump else SF.getSchema("book", isMany=False).dump(book)
+            except Exception as e:
+                return False, None
+        return False, "Book not found"
+
+    def make_book_by_isbn_for_exchange(self, isbn, isDump=False, user=None):
+        if user is None:
+            checkExistence = Book.query.filter_by(book_isbn=isbn)
+        else:
+            checkExistence = Book.query.filter_by(book_isbn=isbn, user_id=user.user_id)
+
+        if checkExistence.count() > 0:
+            book = checkExistence.first()
+            book.is_available_for_exchange = 1
+            try:
+                db.session.add(book)
+                db.session.commit()
+                return True, book if not isDump else SF.getSchema("book", isMany=False).dump(book)
+            except Exception as e:
+                return False, None
+        return False, "Book not found"
+
     def add_list(self, title, isbn, desc, cover_image, author, source, user, isDump=False):
 
         book = Book()

@@ -4,8 +4,7 @@ from application import db
 from sqlalchemy import text
 from application.API.Factory.SchemaFactory import SF
 class PostBL:
-    def add_post(self, title, description, image, user):
-        post = Post()
+    def add_post(self, title, description, image, user, post=Post()):
         post.post_title = title
         post.post_description = description
         post.post_category = 0
@@ -70,3 +69,22 @@ class PostBL:
                    "FROM post LEFT JOIN users on users.user_id = post.user_id WHERE post_title Like '%"+str(search)+"%'")
         posts = db.engine.execute(sql)
         return SF.getSchema("post", isMany=True).dump(posts)
+
+    def get_post_obj_by_id(self, post_id, user=None):
+        post = None
+        if user is None:
+            post = Post.query.filter_by(post_id=post_id)
+        else:
+            post = Post.query.filter_by(post_id=post_id, user_id=user.user_id)
+
+        return post.first() if post.count() > 0 else False
+
+    def delete_post(self, post):
+        try:
+            db.session.delete(post)
+            db.session.commit()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+

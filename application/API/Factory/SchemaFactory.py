@@ -27,3 +27,5 @@ class SF:
             return MessageSchema(many=isMany)
         elif schemaName == "participants" or schemaName == "participant":
             return ParticipantSchema(many=isMany)
+        elif schemaName == "buy":
+            return BuySchema(many=isMany)

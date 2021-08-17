@@ -11,6 +11,7 @@ from application.API.BusinessLogic.ParticipantBL import ParticipantBL
 from application.API.BusinessLogic.ChatMessagesBL import ChatMessagesBL
 from application.API.BusinessLogic.LocationBL import LocationBL
 from application.API.BusinessLogic.UserBL import UserBL
+from application.API.BusinessLogic.BuyBL import BuyBL
 class BF:
     @staticmethod
     def getBL(blName):
@@ -39,6 +40,8 @@ class BF:
             return LocationBL()
         elif blName == "user":
             return UserBL()
+        elif blName == "buy":
+            return BuyBL()
 
 
 

@@ -11,18 +11,47 @@ class NotificationsBL(BusinessLogic):
     def get_notifications(self, user):
 
         query = "SELECT notifications.*,users.fullname, users.profile_image, " \
-                "IF(exchange.to_exchange_with_user_id='"+user.user_id+"', true, false) as is_exchanged_with_me," \
+                "IF(exchange.to_exchange_with_user_id='"+user.user_id+"', true, false) as is_exchanged_with_me, " \
+                "IF(buy_book.book_holder_id='"+user.user_id+"', true, false) as am_i_book_holder, " \
                 "JSON_OBJECT('book_cover_image', book_to_be_received.book_cover_image," \
                 " 'book_title', book_to_be_received.book_title) as book_to_received, " \
                 " JSON_OBJECT('book_cover_image', book_to_be_sent.book_cover_image, " \
-                "'book_title', book_to_be_sent.book_title) as book_to_send " \
+                "'book_title', book_to_be_sent.book_title) as book_to_send, " \
+                "JSON_OBJECT('book_cover_image', bbook.book_cover_image, " \
+                "'book_title', bbook.book_title) as buybook " \
                 "FROM notifications LEFT JOIN users on users.user_id = notifications.user_id " \
                 "LEFT JOIN exchange on exchange.exchange_id = notifications.exchange_id " \
                 "LEFT JOIN book as book_to_be_received on " \
                 "book_to_be_received.book_id = exchange.`book_to_be_received_id` " \
                 "LEFT JOIN book as book_to_be_sent on " \
-                "book_to_be_sent.book_id = exchange.`book_to_be_sent_id`" \
+                "book_to_be_sent.book_id = exchange.`book_to_be_sent_id` " \
+                "LEFT JOIN buy_book on buy_book.buy_id = notifications.buy_id " \
+                "LEFT JOIN book as bbook on bbook.book_id = buy_book.book_id " \
                 "WHERE to_be_notified_user_id ='" + str(user.user_id)+"'"
+
+        return super().get_by_custom_query("notification", query, isMany=True, isDump=True)
+
+
+    def get_push_notifications(self, user):
+
+        query = "SELECT notifications.*,users.fullname, users.profile_image, " \
+                "IF(exchange.to_exchange_with_user_id='"+user.user_id+"', true, false) as is_exchanged_with_me, " \
+                "IF(buy_book.book_holder_id='"+user.user_id+"', true, false) as am_i_book_holder, " \
+                "JSON_OBJECT('book_cover_image', book_to_be_received.book_cover_image," \
+                " 'book_title', book_to_be_received.book_title) as book_to_received, " \
+                " JSON_OBJECT('book_cover_image', book_to_be_sent.book_cover_image, " \
+                "'book_title', book_to_be_sent.book_title) as book_to_send, " \
+                "JSON_OBJECT('book_cover_image', bbook.book_cover_image, " \
+                "'book_title', bbook.book_title) as buybook " \
+                "FROM notifications LEFT JOIN users on users.user_id = notifications.user_id " \
+                "LEFT JOIN exchange on exchange.exchange_id = notifications.exchange_id " \
+                "LEFT JOIN book as book_to_be_received on " \
+                "book_to_be_received.book_id = exchange.`book_to_be_received_id` " \
+                "LEFT JOIN book as book_to_be_sent on " \
+                "book_to_be_sent.book_id = exchange.`book_to_be_sent_id` " \
+                "LEFT JOIN buy_book on buy_book.buy_id = notifications.buy_id " \
+                "LEFT JOIN book as bbook on bbook.book_id = buy_book.book_id " \
+                "WHERE to_be_notified_user_id ='" + str(user.user_id)+"' AND is_notification_read = 0"
 
         return super().get_by_custom_query("notification", query, isMany=True, isDump=True)
 
@@ -54,6 +83,27 @@ class NotificationsBL(BusinessLogic):
         n.to_be_notified_user_id = notification.user_id
         return self.save_notification(n)
 
+    def buy_confirmed_notifications(self, buy):
+        print('buy confirmed '+buy.buy_id)
+
+        model = MF.getModel("notification")
+        notification = model[1].query.filter_by(buy_id=buy.buy_id)
+        if not notification.count() > 0:
+            return False
+        notification = notification.first()
+        notification.is_buy_confirmed = 1
+        notification.is_buy_declined = 0
+        self.save_notification(notification)
+
+        n = model[0]
+        n.is_for_sale = 1
+        n.is_buy_confirmed = 1
+        n.is_buy_declined = 0
+        n.buy_id = notification.buy_id
+        n.user_id = notification.to_be_notified_user_id
+        n.to_be_notified_user_id = notification.user_id
+        return self.save_notification(n)
+
     def exchange_declined_notifications(self, exchange):
         print('exchange declined')
         model = MF.getModel("notification")
@@ -70,6 +120,25 @@ class NotificationsBL(BusinessLogic):
         n.is_exchange_confirmed = 0
         n.is_exchange_declined = 1
         n.exchange_id = notification.exchange_id
+        n.user_id = notification.to_be_notified_user_id
+        n.to_be_notified_user_id = notification.user_id
+        return self.save_notification(n)
+
+    def buy_declined_notifications(self, buy):
+        model = MF.getModel("notification")
+        notification = model[1].query.filter_by(buy=buy.buy_id)
+        if not notification.count() > 0:
+            return False
+        notification = notification.first()
+        notification.is_buy_confirmed = 0
+        notification.is_buy_declined = 1
+        self.save_notification(notification)
+
+        n = model[0]
+        n.is_for_sale = 1
+        n.is_buy_confirmed = 0
+        n.is_buy_declined = 1
+        n.buy_id = notification.buy_id
         n.user_id = notification.to_be_notified_user_id
         n.to_be_notified_user_id = notification.user_id
         return self.save_notification(n)

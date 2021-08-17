@@ -14,9 +14,17 @@ class ChatMessagesBL(BusinessLogic):
             return True, jsonify({"isCreated": True, "messages": SF.getSchema("message", isMany=False).dump(message)})
         return super().create(request=request, modelName="message",involve_login_user=False,isDump=True)
 
+    def create_buy_message(self, request):
+        checkBuyMessage = MF.getModel("message")[1].query.filter_by(buy_id=request.form['buy_id'])
+        if checkBuyMessage.count() > 0:
+            message = checkBuyMessage.first()
+            return True, jsonify({"isCreated": True, "messages": SF.getSchema("message", isMany=False).dump(message)})
+        return super().create(request=request, modelName="message",involve_login_user=False,isDump=True)
+
     def get_chat_messages(self, participants, user):
 
-        query = "SELECT chat_messages.*,exchange.exchange_message, " \
+        query = "SELECT buy_book.buy_id,buy_book.is_rejected, buy_book.is_accepted, " \
+                "chat_messages.*,exchange.exchange_message, " \
                 "exchange.is_exchange_declined, exchange.is_exchange_confirmed, " \
                 "exchange.to_exchange_with_user_id, " \
                 "chat_messages.message_id as _id, chat_messages.message_text as text, " \
@@ -33,6 +41,9 @@ class ChatMessagesBL(BusinessLogic):
                 "sender.profile_image ) as sender, " \
                 "JSON_OBJECT('_id', receiver.user_id, 'name', receiver.fullname, 'avatar', " \
                 "receiver.profile_image ) as receiver, " \
+                "JSON_OBJECT('book_id', bbook.book_id, 'book_title', " \
+                "bbook.book_title, 'book_author', bbook.book_author, " \
+                "'book_cover_image', bbook.book_cover_image, 'selling_price', bbook.selling_price) as bbook_buy, " \
                 "IF(sender.user_id = '"+str(user.user_id)+"', true, false) as amISender " \
                 "FROM chat_messages " \
                 "LEFT JOIN users as sender on sender.user_id = chat_messages.sender_id " \
@@ -40,6 +51,8 @@ class ChatMessagesBL(BusinessLogic):
                 "LEFT JOIN exchange on exchange.exchange_id = chat_messages.exchange_id " \
                 "LEFT JOIN book as book_to_be_sent on book_to_be_sent.book_id = exchange.book_to_be_sent_id " \
                 "LEFT JOIN book as book_to_be_received on book_to_be_received.book_id = exchange.book_to_be_received_id " \
+                "LEFT JOIN buy_book on buy_book.buy_id = chat_messages.buy_id " \
+                "LEFT JOIN book as bbook on bbook.book_id = buy_book.book_id " \
                 "WHERE p_id = '"+str(participants.p_id)+"' ORDER BY chat_messages.message_id DESC"
 
         return super().get_by_custom_query(schemaName="message", query=query, isMany=True, isDump=True)

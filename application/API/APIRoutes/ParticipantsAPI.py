@@ -74,3 +74,39 @@ class ParticipantsAPI(FlaskView):
     #     isDeleted, json_res = BF.getBL("stack").delete_row(request, id)
     #     print(json_res)
     #     return json_res
+
+
+    @route('/initiate__buy_book_chat/<string:buy_id>/', methods=["POST"])
+    def initiate_chat(self, buy_id):
+        response = dict({"isLoggedIn": True})
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return jsonify(notLoggedIn)
+
+        buy = BF.getBL("buy").get_buy_request(buy_id, False)
+
+        if not buy:
+            return jsonify(invalidArgsResponse)
+
+        # the participants of the chat are received.
+        participants = BF.getBL("participants").get_participant(buy.book_holder_id, buy.user_id)
+        # now, the exchange request message will be created in the chat
+        print('user user_id: '+buy.user_id)
+        print('book_holder_id user_id: '+buy.book_holder_id)
+
+        form = dict()
+        form['buy_id'] = buy.buy_id
+        form['is_for_sale'] = 1
+        form['receiver_id'] = buy.user_id
+        form['sender_id'] = buy.book_holder_id
+        form['p_id'] = participants.p_id
+        form['message_text'] = 'Book buying Request'
+        request.form = form
+        isCreated, json_res = BF.getBL("messages").create_buy_message(request)
+        if isCreated:
+            response.update(
+                {"isCreated": True,
+                 "participants": SF.getSchema("participants",isMany=False).dump(participants)
+                 })
+            return jsonify(response)
+        return jsonify({"isCreated": False, "message": "Error occurred, please try again "})

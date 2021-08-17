@@ -17,7 +17,7 @@ class BooksAPI(FlaskView, BusinessLogic):
                 " 111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(" + user.location_latitude + ")) * COS(RADIANS(users.location_latitude))" \
                                                                                              " * COS(RADIANS(" + user.location_longitude + " - users.location_longitude)) + SIN(RADIANS(" + user.location_latitude + ")) * SIN(RADIANS(users.location_latitude))))) AS distance_in_km, " \
                                                                                                                                                                                                                      "users.fullname, users.profile_image, users.location_longitude, users.location_latitude" \
-                                                                                                                                                                                                                     " FROM book LEFT JOIN users on users.user_id = book.user_id WHERE book.is_available_for_exchange = 1 " \
+                                                                                                                                                                                                                     " FROM book LEFT JOIN users on users.user_id = book.user_id WHERE book.is_available_for_exchange = 1 or book.is_for_sale = 1 " \
                                                                                                                                                                                                                      "AND book.user_id != '"+str(user.user_id)+"'"
         # "AND book.user_id != "+str(user.user_id)
         isFetched, books = super().get_by_custom_query("book", query, isMany=True, isDump=True)
@@ -31,16 +31,21 @@ class BooksAPI(FlaskView, BusinessLogic):
             return False, jsonify(notLoggedIn)
 
         if 'book_isbn' in request.form:
-            isBookFound, book = BF.getBL("book").get_book_by_isbn(request.form['book_isbn'], isDump=True, user=user)
+            bl = BF.getBL("book")
+            isBookFound, book = bl.get_book_by_isbn(request.form['book_isbn'], isDump=True, user=user)
             if isBookFound:
-                book = book
+                if request.form['is_for_sale'] == "1":
+                    isBook, book = bl.make_book_by_isbn_for_sale(request.form['book_isbn'], request.form['selling_price'],
+                                                                 isDump=True, user=user)
+                elif request.form['is_available_for_exchange'] == "1":
+                    isBook, book = bl.make_book_by_isbn_for_exchange(request.form['book_isbn'], isDump=True, user=user)
+
                 return jsonify({"isLoggedIn": True, "isCreated": True, "book": book, "message": "Book added"})
 
         isCreated, json_res = super().create(request=request, modelName="book", involve_login_user=True)
         return json_res
 
     def delete(self, id):
-        print(id)
         isDeleted, json_res = super().delete_row(request=request,
                                                  modelName="book",
                                                  columnName="book_id",
@@ -51,7 +56,7 @@ class BooksAPI(FlaskView, BusinessLogic):
 
     @route("/delete_book/<string:id>/", methods=["DELETE"])
     def delete_book(self, id):
-        print(id)
+        print(request.args)
         isDeleted, json_res = super().delete_row(request=request,
                                                  modelName="book",
                                                  columnName="book_id",
@@ -69,7 +74,7 @@ class BooksAPI(FlaskView, BusinessLogic):
         return json_res
 
     def delete_book_from_stack(self, request, data):
-        print('delete book from stack called: ' + str(data.book_id))
+        # print('delete book from stack called: ' + str(data.book_id))
         return super().delete_row(request=request,
                                   modelName="stack",
                                   columnName="book_id",

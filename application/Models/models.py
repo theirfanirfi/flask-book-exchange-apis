@@ -76,6 +76,8 @@ class Book(db.Model):
     user_id = db.Column(db.String(200), nullable=False)
     book_added_from = db.Column(db.String(200), nullable=False)
     is_available_for_exchange = db.Column(db.Integer, default=1)
+    is_for_sale = db.Column(db.Integer, default=0)
+    selling_price = db.Column(db.Float, default=0.0)
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
@@ -89,7 +91,20 @@ class Exchange(db.Model):
     book_to_be_received_id = db.Column(db.Integer, nullable=False)
     is_exchange_confirmed = db.Column(db.Integer, default=0)
     is_exchange_declined = db.Column(db.Integer, default=0)
+    is_for_sale = db.Column(db.Integer, default=0)
     exchange_message = db.Column(db.Text)
+    created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+
+
+class buy_book(db.Model):
+    obj = uuid.uuid4
+    buy_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
+    book_holder_id = db.Column(db.String(200), nullable=False)
+    user_id = db.Column(db.String(200), nullable=False)
+    book_id = db.Column(db.String(200), nullable=False)
+    is_accepted = db.Column(db.Integer, default=0)
+    is_rejected = db.Column(db.Integer, default=0)
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
@@ -134,6 +149,7 @@ class Notification(db.Model):
     user_id = db.Column(db.String(200), nullable=False, default=0)
     to_be_notified_user_id = db.Column(db.String(200), nullable=False, default=0)
     exchange_id = db.Column(db.String(200), nullable=False, default=0)
+    buy_id = db.Column(db.String(200), nullable=False, default=0)
     is_like = db.Column(db.Integer, nullable=False, default=0)
     is_comment = db.Column(db.Integer, nullable=False, default=0)
     is_follow = db.Column(db.Integer, nullable=False, default=0)
@@ -141,8 +157,14 @@ class Notification(db.Model):
     is_exchange_notification = db.Column(db.Integer, nullable=False, default=0)
     is_exchange_confirmed = db.Column(db.Integer, nullable=False, default=0)
     is_exchange_declined = db.Column(db.Integer, nullable=False, default=0)
+    is_buy_confirmed = db.Column(db.Integer, nullable=False, default=0)
+    is_buy_declined = db.Column(db.Integer, nullable=False, default=0)
     book_to_be_provided_id = db.Column(db.Integer, nullable=False, default=0)
     book_requested_id = db.Column(db.Integer, nullable=False, default=0)
+
+    is_for_sale = db.Column(db.Integer, nullable=False, default=0)
+    # buy_id = db.Column(db.Integer, nullable=False, default=0)
+
     is_notification_read = db.Column(db.Integer, nullable=False, default=0)
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
@@ -167,7 +189,9 @@ class ChatMessage(db.Model):
     receiver_id = db.Column(db.String(200), nullable=False)
     is_message = db.Column(db.Integer, default=0)
     is_exchange = db.Column(db.Integer, default=0)
+    is_for_sale = db.Column(db.Integer, default=0)
     exchange_id = db.Column(db.String(200), default=0)
+    buy_id = db.Column(db.String(200), default=0)
     p_id = db.Column(db.String(200), default=0)
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
@@ -310,7 +334,7 @@ class NotificationSchema(ma.Schema):
             for prop in class_mapper(Book).iterate_properties
             if isinstance(prop, ColumnProperty)
         ]
-        fields += ['isMine', 'book_to_received', 'book_to_send', 'is_exchanged_with_me']
+        fields += ['isMine', 'book_to_received', 'book_to_send', 'is_exchanged_with_me', 'buybook','am_i_book_holder']
 
 
 class MessageSchema(ma.Schema):
@@ -328,7 +352,8 @@ class MessageSchema(ma.Schema):
         ]
         fields += ['sender', 'receiver', 'amISender', 'book_to_be_received', 'book_to_be_sent',
                    '_id', 'text', 'createdAt', 'user', 'exchange_message', 'is_exchange_declined',
-                   'is_exchange_confirmed', 'to_exchange_with_user_id']
+                   'is_exchange_confirmed', 'to_exchange_with_user_id', 'bbook_buy', 'bbook', 'buy_id',
+                   'is_accepted', 'is_rejected']
 
 
 class ParticipantSchema(ma.Schema):
@@ -345,3 +370,18 @@ class ParticipantSchema(ma.Schema):
             if isinstance(prop, ColumnProperty)
         ]
         fields += ['amIUserOne', 'user_one', 'user_two']
+
+class BuySchema(ma.Schema):
+    class Meta:
+        fields = [
+            prop.key
+            for prop in class_mapper(buy_book).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+
+        fields += [
+            prop.key
+            for prop in class_mapper(User).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
+        # fields += ['amIUserOne', 'user_one', 'user_two']

@@ -3,6 +3,7 @@ from application.API.Factory.SchemaFactory import SF
 from application.API.Factory.ModelFactory import MF
 from application.API.BusinessLogic.BusinessLogic import BusinessLogic
 from application.API.BusinessLogic.ExchangeBL import ExchangeBL
+from application.API.BusinessLogic.BuyBL import BuyBL
 from application.API.BusinessLogic.ChatMessagesBL import ChatMessagesBL
 from sqlalchemy import and_, or_
 from flask import jsonify
@@ -72,6 +73,33 @@ class ParticipantBL(BusinessLogic):
         request.form = form
 
         isCreated, json_res = ChatMessagesBL().create_exchange_message(request)
+
+        if isCreated:
+            response.update(
+                {"isCreated": True,
+                 "participants": SF.getSchema("participants",isMany=False).dump(participants)
+                 })
+            return jsonify(response)
+        return jsonify({"isCreated": False, "message": "Error occurred, please try again "})
+
+    def initiate_chat_for_buying_request(self, request, buy_id, user):
+        response = dict({"isLoggedIn": True})
+        buy = BuyBL().get_buy_request(buy_id, isDump=False)
+
+
+        # the participants of the chat are received.
+        participants = self.get_participant(buy.book_holder_id, user.user_id)
+        # now, the exchange request message will be created in the chat
+        form = dict()
+        form['buy_id'] = buy.buy_id
+        form['is_for_sale'] = 1
+        form['receiver_id'] = buy.book_holder_id
+        form['sender_id'] = user.user_id
+        form['message_text'] = "Buy Request"
+        form['p_id'] = participants.p_id
+        request.form = form
+
+        isCreated, json_res = ChatMessagesBL().create_buy_message(request)
 
         if isCreated:
             response.update(

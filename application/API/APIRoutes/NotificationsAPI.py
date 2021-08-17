@@ -15,3 +15,14 @@ class NotificationsAPI(FlaskView):
         is_found, notifications = BF.getBL("notification").get_notifications(user)
         response.update({"notifications": notifications})
         return jsonify(response)
+
+    @route('/get_notifications/')
+    def get_push_notifications(self):
+        response = dict({"isLoggedIn": True})
+        user = AuthorizeRequest(request.headers)
+        if not user:
+            return jsonify(notLoggedIn)
+
+        is_found, notifications = BF.getBL("notification").get_push_notifications(user)
+        response.update({"isFound": is_found, "notifications": notifications})
+        return jsonify(response)
