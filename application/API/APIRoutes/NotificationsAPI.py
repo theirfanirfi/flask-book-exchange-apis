@@ -25,4 +25,7 @@ class NotificationsAPI(FlaskView):
 
         is_found, notifications = BF.getBL("notification").get_push_notifications(user)
         response.update({"isFound": is_found, "notifications": notifications})
+
+
+
         return jsonify(response)

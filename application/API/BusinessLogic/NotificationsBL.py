@@ -53,6 +53,13 @@ class NotificationsBL(BusinessLogic):
                 "LEFT JOIN book as bbook on bbook.book_id = buy_book.book_id " \
                 "WHERE to_be_notified_user_id ='" + str(user.user_id)+"' AND is_notification_read = 0"
 
+        update_query = "UPDATE notifications SET notifications.is_notification_read = 1 WHERE to_be_notified_user_id ='" + str(user.user_id)+"'"
+        try:
+            db.engine.execute(update_query)
+            print('updated')
+        except Exception as e:
+            print(e)
+
         return super().get_by_custom_query("notification", query, isMany=True, isDump=True)
 
     def create(self, request, involve_login_user=True):
