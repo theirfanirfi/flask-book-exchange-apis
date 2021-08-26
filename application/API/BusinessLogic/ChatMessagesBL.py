@@ -8,7 +8,7 @@ from sqlalchemy import and_, or_
 
 class ChatMessagesBL(BusinessLogic):
 
-    def create_chat_message(self,sender_id, receiver_id, message, participant_id):
+    def create_chat_message(self, sender_id, receiver_id, message, participant_id):
         message_model = MF.getModel("message")[0]
         message_model.sender_id = sender_id
         message_model.receiver_id = receiver_id

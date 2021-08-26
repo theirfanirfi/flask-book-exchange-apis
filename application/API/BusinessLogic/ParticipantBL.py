@@ -44,6 +44,17 @@ class ParticipantBL(BusinessLogic):
             return self.create_participants(user_one_id, user_two_id)
         return participants.first()
 
+    def get_participant_for_team(self, user_one_id, user_two_id):
+        print('get_participant user one: '+user_one_id)
+        print('get_participant user two: '+user_two_id)
+
+        model = MF.getModel("participants")[1]
+        participants = model.query.filter(or_(and_(model.user_one_id==user_one_id, model.user_two_id==user_two_id),
+                                              and_(model.user_two_id==user_one_id, model.user_one_id==user_two_id)))
+        if not participants.count() > 0:
+            return False
+        return participants.first()
+
     def get_participant_by_id(self, p_id, user_id):
         model = MF.getModel("participants")[1]
         participants = model.query.filter(and_((model.p_id==p_id), or_(model.user_one_id==user_id, model.user_two_id==user_id)))

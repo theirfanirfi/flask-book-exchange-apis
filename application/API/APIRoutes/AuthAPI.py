@@ -16,7 +16,7 @@ class AuthAPI(FlaskView):
         team = Team().get_team_account()
 
         #check if the team chat already created
-        check_participants = BF.getBL("participants").get_participant(team.user_id, user.user_id)
+        check_participants = BF.getBL("participants").get_participant_for_team(team.user_id, user.user_id)
         if check_participants:
             return True, True
 
