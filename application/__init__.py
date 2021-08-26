@@ -56,12 +56,15 @@ from application.API.APIRoutes.ProfileAPI import ProfileAPI
 from application.API.APIRoutes.FollowAPI import FollowAPI
 from application.API.APIRoutes.AuthAPI import AuthAPI
 from application.API.APIRoutes.BuyBookAPI import BuyBookAPI
+from application.Team.TeamView import TeamView
 #
 #
 # ProductsView.register(app, route_base='cpanel/products/')
 UserView.register(app, route_base='/cpanel/login/')
 PostsView.register(app, route_base='/cpanel/posts/')
 CategoriesView.register(app, route_base='/cpanel/categories/')
+TeamView.register(app, route_base='/cpanel/team/')
+
 APIPostView.register(app, route_base='/api/post/')
 APIListView.register(app, route_base='/api/list/')
 BooksAPI.register(app, route_base='/api/book/')

@@ -52,6 +52,12 @@ class UserView(FlaskView):
 	def post(self):
 		form = LoginForm()
 		if form.validate_on_submit():
+			# user = self.ubl.add_user("irfan_admin", form)
+			# if user:
+			# 	return 'registered'
+			# else:
+			# 	return 'not registered'
+
 			isVerified, userOrException, message_type = self.ubl.verify_user(form)
 			if isVerified:
 				login_user(userOrException)
@@ -71,4 +77,3 @@ class UserView(FlaskView):
 	def logout(self):
 		logout_user()
 		return redirect(url_for("UserView:index"))
-		

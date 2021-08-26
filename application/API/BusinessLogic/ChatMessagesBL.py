@@ -7,6 +7,21 @@ from sqlalchemy import and_, or_
 
 
 class ChatMessagesBL(BusinessLogic):
+
+    def create_chat_message(self,sender_id, receiver_id, message, participant_id):
+        message_model = MF.getModel("message")[0]
+        message_model.sender_id = sender_id
+        message_model.receiver_id = receiver_id
+        message_model.message_text = message
+        message_model.p_id = participant_id
+        try:
+            db.session.add(message_model)
+            db.session.commit()
+            return message_model
+        except Exception as e:
+            print(e)
+            return False
+
     def create_exchange_message(self, request):
         checkExchangeMessage = MF.getModel("message")[1].query.filter_by(exchange_id=request.form['exchange_id'])
         if checkExchangeMessage.count() > 0:
@@ -56,5 +71,17 @@ class ChatMessagesBL(BusinessLogic):
                 "WHERE p_id = '"+str(participants.p_id)+"' ORDER BY chat_messages.message_id DESC"
 
         return super().get_by_custom_query(schemaName="message", query=query, isMany=True, isDump=True)
+
+    def get_chat_messages_for_team(self, participants, user):
+
+        query = "SELECT " \
+                "chat_messages.*," \
+                "IF(sender.user_id = '"+str(user.user_id)+"', 1, 0) as amISender " \
+                "FROM chat_messages " \
+                "LEFT JOIN users as sender on sender.user_id = chat_messages.sender_id " \
+                "LEFT JOIN users as receiver on receiver.user_id = chat_messages.receiver_id " \
+                "WHERE p_id = '"+str(participants.p_id)+"' ORDER BY chat_messages.message_id DESC"
+
+        return super().get_by_custom_query(schemaName="message", query=query, isMany=True, isDump=False)
 
 

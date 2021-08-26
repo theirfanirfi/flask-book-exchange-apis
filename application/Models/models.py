@@ -19,14 +19,17 @@ class User(db.Model, UserMixin):
     token = db.Column(db.String(200), nullable=True)
     password = db.Column(db.String(200), nullable=False)
     is_admin = db.Column(db.Integer, default=0)
+    is_team = db.Column(db.Integer, default=0)
     profile_image = db.Column(db.Text, nullable=True)
     location_longitude = db.Column(db.String(50), nullable=True)
     location_latitude = db.Column(db.String(50), nullable=True)
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    welcome_message = db.Column(db.Text, nullable=True)
 
     def get_id(self):
         return (self.user_id)
+
 
 
 class Follower(db.Model, UserMixin):

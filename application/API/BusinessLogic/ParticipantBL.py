@@ -10,6 +10,16 @@ from flask import jsonify
 
 
 class ParticipantBL(BusinessLogic):
+
+    def get_participants(self, user):
+        query = "SELECT *, " \
+                "IF(user_one.user_id='"+str(user.user_id)+"',true,false) as amIUserOne FROM chat_participants " \
+                "LEFT JOIN users as user_one on user_one.user_id = chat_participants.user_one_id " \
+                "LEFT JOIN users as user_two on user_two.user_id = chat_participants.user_two_id " \
+                "WHERE user_one_id = '"+str(user.user_id)+"' OR user_two_id = '"+str(user.user_id)+"'"
+
+        return super().get_by_custom_query(schemaName="participants", query=query, isMany=True, isDump=False)
+
     def get_my_chat_participants(self, user):
 
         query = "SELECT chat_participants.*, " \

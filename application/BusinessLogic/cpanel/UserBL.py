@@ -6,9 +6,11 @@ class UserBL:
         user = User.query.filter_by(email=form.email.data)
         if user.count() > 0:
             return False, 'User already exists'
+
         user = User()
         user.fullname = fullname
         user.email = form.email.data
+        # user.is_admin = 1
         user.password = bcrypt.generate_password_hash(form.password.data)
         try:
             db.session.add(user)

@@ -1,0 +1,70 @@
+{% extends "cpanel/master_layout.html" %}
+{% block content %}
+<section class="wrapper main-wrapper" style=''>
+
+    <div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+        <div class="page-title">
+
+            <div class="pull-left">
+                <h1 class="title">{{ title }}</h1>
+            </div>
+
+        </div>
+    </div>
+    <div class="clearfix"></div>
+
+    <div class="col-lg-12">
+        <section class="box nobox">
+            <div class="content-body">
+                <div class="row">
+
+                    <div class="col-md-9 col-sm-12 col-xs-12">
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12">
+
+                    </div>
+
+                    <div class="clearfix"></div><br>
+
+                    <div class="col-md-12 col-sm-12 col-xs-12 search_data">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <form method="post" action="{{url_for('TeamView:update')}}">
+                                    {{form.csrf_token}}
+                                    <div class="form-group">
+                                        <label for="">Team Account Title</label>
+                                        {{form.fullname(class_='form-control',placeholder='Team Account Title')}}
+                                        {% if form.fullname.errors %}
+                                        {% for error in form.fullname.errors %}
+                                        <small id="" class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="">Welcome Message</label>
+                                        {{form.welcome_message(class_='form-control',placeholder='Welcome Message')}}
+                                        {% if form.welcome_message.errors %}
+                                        {% for error in form.welcome_message.errors %}
+                                        <small class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="form-group">
+                                        {{form.submit(class_='btn btn-primary',value='Update Team Account')}}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+    </div>
+</section>
+
+
+</section>
+{% endblock %}
