@@ -8,6 +8,25 @@ from sqlalchemy import and_, or_
 
 class ChatMessagesBL(BusinessLogic):
 
+    def get_unread_messages_count_for_participant(self, participant_id):
+        message_model = MF.getModel("message")[1]
+        return message_model.query.filter_by(p_id=participant_id, is_read=0).count()
+
+    def get_unread_messages_count_for_user(self, user_id):
+        message_model = MF.getModel("message")[1]
+        return message_model.query.filter_by(receiver_id=user_id, is_read=0).count()
+
+    def make_messages_read_for_user(self, user_id):
+        message_model = MF.getModel("message")[1]
+        messages = message_model.query.filter_by(receiver_id=user_id, is_read=0).update({"is_read": 1})
+        try:
+            # db.session.add(messages)
+            db.session.commit()
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
     def create_chat_message(self, sender_id, receiver_id, message, participant_id):
         message_model = MF.getModel("message")[0]
         message_model.sender_id = sender_id
@@ -72,16 +91,14 @@ class ChatMessagesBL(BusinessLogic):
 
         return super().get_by_custom_query(schemaName="message", query=query, isMany=True, isDump=True)
 
-    def get_chat_messages_for_team(self, participants, user):
+    def get_chat_messages_for_team(self, participants, user, isDump=False):
 
-        query = "SELECT " \
-                "chat_messages.*," \
-                "IF(sender.user_id = '"+str(user.user_id)+"', 1, 0) as amISender " \
+        query = "SELECT *, " \
+                "IF(users.user_id = '"+str(user.user_id)+"', 1, 0) as amISender " \
                 "FROM chat_messages " \
-                "LEFT JOIN users as sender on sender.user_id = chat_messages.sender_id " \
-                "LEFT JOIN users as receiver on receiver.user_id = chat_messages.receiver_id " \
-                "WHERE p_id = '"+str(participants.p_id)+"' ORDER BY chat_messages.message_id DESC"
+                "LEFT JOIN users on users.user_id = chat_messages.sender_id " \
+                "WHERE p_id = '"+str(participants.p_id)+"' ORDER BY chat_messages.message_id ASC"
 
-        return super().get_by_custom_query(schemaName="message", query=query, isMany=True, isDump=False)
+        return super().get_by_custom_query(schemaName="message", query=query, isMany=True, isDump=isDump)
 
 

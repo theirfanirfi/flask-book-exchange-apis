@@ -33,6 +33,14 @@ class ParticipantBL(BusinessLogic):
                 "WHERE user_one_id = '"+str(user.user_id)+"' OR user_two_id = '"+str(user.user_id)+"'"
         return super().get_by_custom_query(schemaName="participants",query=query, isMany=True, isDump=True)
 
+    def get_all_participants_for_user(self, user_id):
+        model = MF.getModel("participants")[1]
+        participants = model.query.filter(or_(model.user_one_id==user_id, model.user_two_id==user_id))
+        if participants.count() > 0:
+            return participants.all()
+        return False
+
+
     def get_participant(self, user_one_id, user_two_id):
         print('get_participant user one: '+user_one_id)
         print('get_participant user two: '+user_two_id)

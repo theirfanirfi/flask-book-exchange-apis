@@ -71,7 +71,7 @@
                             {% if participants %}
                             {% for p in participants %}
                                 <a class="list-group-item list-group-item-action text-white rounded-0"
-                                    href="#goto_chat">
+                                    href="{{url_for('TeamView:chat', participant_id=p['participant'].p_id)}}">
                                     <div class="media">
 <!--                                        <img-->
 <!--                                            src="https://res.cloudinary.com/mhmd/image/upload/v1564960395/avatar_usae7z.svg"-->
@@ -79,12 +79,13 @@
                                         <div class="media-body ml-4">
                                             <div class="d-flex align-items-center justify-content-between mb-1">
 <!--                                                <?php $unread = $p->getUnReadMessagesCountOfParticipant(); ?>-->
-<!--                                                <h6 class="mb-0" style="color:black;"> $p->name @if ($unread > 0)<span-->
-<!--                                                            class="badge badge-warning"> $unread</span>-->
-<!--                                                    @endif-->
-<!--                                                </h6>-->
+                                                <h6 class="mb-0" style="color:black;"> {{p['participant'].fullname}}
+                                                    {% if p['un_read_messages'] > 0 %}<span
+                                                            class="badge badge-warning"> {{p['un_read_messages']}}</span>
+                                                    {% endif %}
+                                                </h6>
                                                 <small style="color:black;"
-                                                    class="small font-weight-bold">created_at</small>
+                                                    class="small font-weight-bold">{{p['participant'].created_at[:10]}}</small>
                                             </div>
 <!--                                            <p class="font-italic mb-0 text-small">Lorem ipsum dolor sit amet, consectetur-->
 <!--                                                adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p> -->
@@ -110,24 +111,24 @@
                             {% for c in chats %}
                                 {% if c.amISender == 1 %}
                                     <!-- Sender Message-->
-<!--                                    <div class="media w-50 mb-3">-->
-<!--                                        <div class="media-body ml-3">-->
-<!--                                            <div class="bg-light rounded py-2 px-3 mb-2">-->
-<!--                                                <p class="text-small mb-0 text-muted"> $c->message }}</p>-->
-<!--                                            </div>-->
-<!--                                            <p class="small text-muted"> $c->created_at }}</p>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                    <div class="media w-50 mb-3">
+                                        <div class="media-body ml-3">
+                                            <div class="bg-light rounded py-2 px-3 mb-2">
+                                                <p class="text-small mb-0 text-muted"> {{ c.message_text }}</p>
+                                            </div>
+                                            <p class="small text-muted"> {{c.created_at }}</p>
+                                        </div>
+                                    </div>
                                 {% else %}
                                     <!-- Reciever Message-->
-<!--                                    <div class="media w-50 ml-auto mb-3">-->
-<!--                                        <div class="media-body">-->
-<!--                                            <div class="bg-primary rounded py-2 px-3 mb-2">-->
-<!--                                                <p class="text-small mb-0 text-white"> $c->message }}</p>-->
-<!--                                            </div>-->
-<!--                                            <p class="small text-muted"> $c->created_at }}</p>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                    <div class="media w-50 ml-auto mb-3">
+                                        <div class="media-body">
+                                            <div class="bg-primary rounded py-2 px-3 mb-2">
+                                                <p class="text-small mb-0 text-white"> {{c.message_text}}</p>
+                                            </div>
+                                            <p class="small text-muted">{{c.created_at }}</p>
+                                        </div>
+                                    </div>
                                 {% endif %}
                             {% endfor %}
                         {% else %}
@@ -153,60 +154,57 @@
             </div>
         </div>
     </div>
+        {% if is_chats %}
 
     <script>
-        // @if ($is_chats)
-        //     $("#button-addon2").click(function(e) {
-        //     e.preventDefault();
-        //     var msg = $("#msg").val();
-        //     if (msg.trim() == '') {
-        //     return false;
-        //     }
-        //     var token = "csrf_token() }}";
-        //
-        //     var send_url = " route('chatboard.store') }}";
-        //     $.ajax(send_url, {
-        //     method: 'POST',
-        //     data: {
-        //     "_token": token,
-        //     "msg": msg,
-        //     "p_id": $participant->p_id }}
-        //     },
-        //     headers: {
-        //     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //     },
-        //     success: function(data) {
-        //     if (data.isSent) {
-        //     $('#messages').append(data.message);
-        //     $("#msg").val('');
-        //     } else {
-        //     alert('Error occurred, please try again.');
-        //     }
-        //     }
-        //     })
-        //     })
-        //
-        //
-        //     function get_messages(){
-        //     var url = " route('chatboard.edit', $participant->p_id) }}";
-        //     console.log(url);
-        //     $.ajax(url, {
-        //     method: 'GET',
-        //     headers: {
-        //     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //     },
-        //     success: function(data) {
-        //     if (data.isFound) {
-        //     $('#messages').html(data.chats);
-        //     } else {
-        //     // alert('Error occurred, please try again.');
-        //     }
-        //     }
-        //     })
-        //     }
-        //     setInterval(get_messages ,5000);
-        // @endif
+            $("#button-addon2").click(function(e) {
+            e.preventDefault();
+            var msg = $("#msg").val();
+            if (msg.trim() == '') {
+            return false;
+            }
+            // var token = "csrf_token() }}";
+
+            var send_url = " {{url_for('TeamView:send_message', p_id=participant.p_id) }}";
+            $.ajax(send_url, {
+            method: 'GET',
+            data: {
+            "msg": msg,
+            },
+
+            success: function(data) {
+            if (data.isSent) {
+            $('#messages').append(data.chats);
+            $("#msg").val('');
+            } else {
+            alert('Error occurred, please try again.');
+            }
+            }
+            })
+            })
+
+
+            function get_messages(){
+            var url = "{{url_for('TeamView:get_messages', p_id=participant.p_id) }}";
+            console.log(url);
+            $.ajax(url, {
+            method: 'GET',
+            // headers: {
+            // 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            // },
+            success: function(data) {
+            if (data.isFound) {
+                console.log(data.chats)
+            $('#messages').html(data.chats);
+            } else {
+            // alert('Error occurred, please try again.');
+            }
+            }
+            })
+            }
+            setInterval(get_messages ,30000);
     </script>
+        {% endif %}
 
 <!--    @if ($is_chats)-->
 <!--        <?php $participant->makeChatReadForTheParticipant(); ?>-->

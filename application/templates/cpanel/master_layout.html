@@ -152,7 +152,8 @@
                 <li class="">
                     <a href="{{url_for('TeamView:chats')}}">
                         <i class="fa fa-comments"></i>
-                        <span class="title">Team Chat</span>
+                        <span class="title">Team Chat&nbsp;
+                            <span class="badge badge-warning" id="unread_message"></span></span>
                     </a>
                 </li>
 
@@ -213,21 +214,35 @@
 <script>
     var msg = '{{message}}';
     alert("Error: " + msg);
-
-
 </script>
 {% elif category == 'success' %}
 <script>
     var msg = '{{message}}';
     alert("Success: " + msg);
-
-
 </script>
 {% endif %}
 {% endfor %}
 {% endif %}
 {% endwith %}
 
+<script type="text/javascript">
+    function get_un_read_messages_count() {
+        var url = "{{url_for('TeamView:get_unread_message_count') }}";
+        $.ajax(url, {
+            method: 'GET',
+            success: function (data) {
+                console.log(data);
+                if (parseInt(data) > 0) {
+                    $('#unread_message').html(data);
+                } else {
+                    // alert('Error occurred, please try again.');
+                }
+            }
+        })
+    }
+
+    setInterval(get_un_read_messages_count(), 50000);
+</script>
 </body>
 
 

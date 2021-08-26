@@ -198,6 +198,7 @@ class ChatMessage(db.Model):
     p_id = db.Column(db.String(200), default=0)
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
+    is_read = db.Column(db.Integer, default=0)
 
 
 ######## schemas

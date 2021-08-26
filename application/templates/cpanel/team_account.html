@@ -24,7 +24,8 @@
 
                     </div>
 
-                    <div class="clearfix"></div><br>
+                    <div class="clearfix"></div>
+                    <br>
 
                     <div class="col-md-12 col-sm-12 col-xs-12 search_data">
                         <div class="row">
@@ -53,6 +54,29 @@
 
                                     <div class="form-group">
                                         {{form.submit(class_='btn btn-primary',value='Update Team Account')}}
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h1>Send Team Message</h1>
+                                <form method="post" action="{{url_for('TeamView:send_team_message')}}">
+                                    {{tform.csrf_token}}
+                                    <div class="form-group">
+                                        <label for="">Team Message</label>
+                                        {{tform.send_message(class_='form-control',placeholder='Write Message')}}
+                                        {% if tform.send_message.errors %}
+                                        {% for error in tform.send_message.errors %}
+                                        <small  class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="form-group">
+                                        {{tform.submit(class_='btn btn-primary',value='Send Message')}}
                                     </div>
                                 </form>
                             </div>
