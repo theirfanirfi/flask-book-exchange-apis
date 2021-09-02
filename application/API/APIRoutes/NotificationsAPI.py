@@ -48,15 +48,14 @@ class NotificationsAPI(FlaskView):
         print(push_notifications)
 
         if len(push_notifications) > 0:
+            print('len if')
             for push_notification in push_notifications:
                 p_notification = BF.getBL("notification").is_notification_read(push_notification.notification_id,
                                                                                user.user_id)
                 if p_notification:
+                    print('p if')
                     user_push_notifications.append(push_notification)
             response.update({"isPushNotificationsFound": True if len(user_push_notifications) > 0 else False,
-                             "push_notifications": user_push_notifications})
-        else:
-            response.update({"isPushNotificationsFound": False,
                              "push_notifications": user_push_notifications})
 
         return jsonify(response)
