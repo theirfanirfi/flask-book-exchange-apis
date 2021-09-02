@@ -31,3 +31,5 @@ class MF:
             return Follower(), Follower
         elif modelName == "buy":
             return buy_book(), buy_book
+        elif modelName == "read":
+            return ReadNotifications(), ReadNotifications

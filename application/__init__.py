@@ -40,6 +40,9 @@ from application.Models import *
 from application.Views.CategoriesView import CategoriesView
 from application.Views.PostsView import PostsView
 from application.Views.UserView import UserView
+from application.Views.CustomPushNotificationsView import CustomPushNotificationsView
+
+
 from application.API.APIRoutes.PostView import APIPostView
 from application.API.APIRoutes.ListView import APIListView
 from application.API.APIRoutes.BooksAPI import BooksAPI
@@ -64,6 +67,7 @@ UserView.register(app, route_base='/cpanel/login/')
 PostsView.register(app, route_base='/cpanel/posts/')
 CategoriesView.register(app, route_base='/cpanel/categories/')
 TeamView.register(app, route_base='/cpanel/team/')
+CustomPushNotificationsView.register(app, route_base='/cpanel/push_notifications/')
 
 APIPostView.register(app, route_base='/api/post/')
 APIListView.register(app, route_base='/api/list/')

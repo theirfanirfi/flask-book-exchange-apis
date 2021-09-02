@@ -34,6 +34,10 @@ class PostForm(FlaskForm):
         FileAllowed(['png', 'jpg', 'jpeg'], "JPG, PNG, JPEG files are only allowed.")])
     submit = SubmitField()
 
+class CustomPushNotificationForm(FlaskForm):
+    notification_message = TextAreaField('Notification Text', validators=[DataRequired()])
+    submit = SubmitField()
+
 
 
 

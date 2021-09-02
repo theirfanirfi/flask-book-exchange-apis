@@ -13,7 +13,21 @@ class NotificationsAPI(FlaskView):
             return jsonify(notLoggedIn)
 
         is_found, notifications = BF.getBL("notification").get_notifications(user)
+        push_notifications = BF.getBL("push_notifications").get_notifications()
+        user_push_notifications = list()
+
         response.update({"notifications": notifications})
+
+        if len(push_notifications) > 0:
+            for push_notification in push_notifications:
+                p_notification = BF.getBL("notification").is_notification_read(push_notification.notification_id, user.user_id)
+                if p_notification:
+                    user_push_notifications.append(push_notification)
+            response.update({"isPushNotificationsFound": True if len(user_push_notifications) > 0 else False, "push_notifications": user_push_notifications})
+        else:
+            response.update({"isPushNotificationsFound": False,
+                             "push_notifications": user_push_notifications})
+
         return jsonify(response)
 
     @route('/get_notifications/')
@@ -24,8 +38,23 @@ class NotificationsAPI(FlaskView):
             return jsonify(notLoggedIn)
 
         is_found, notifications = BF.getBL("notification").get_push_notifications(user)
-        response.update({"isFound": is_found, "notifications": notifications})
+        user_push_notifications = list()
 
+        response.update({"isFound": is_found, "notifications": notifications,"isPushNotificationsFound": False,
+                             "push_notifications": user_push_notifications})
 
+        push_notifications = BF.getBL("push_notifications").get_notifications()
+
+        if len(push_notifications) > 0:
+            for push_notification in push_notifications:
+                p_notification = BF.getBL("notification").is_notification_read(push_notification.notification_id,
+                                                                               user.user_id)
+                if p_notification:
+                    user_push_notifications.append(push_notification)
+            response.update({"isPushNotificationsFound": True if len(user_push_notifications) > 0 else False,
+                             "push_notifications": user_push_notifications})
+        else:
+            response.update({"isPushNotificationsFound": False,
+                             "push_notifications": user_push_notifications})
 
         return jsonify(response)

@@ -172,6 +172,18 @@ class Notification(db.Model):
     created_at = db.Column(db.String(50), default=str(datetime.now())[:19])
     updated_at = db.Column(db.String(50), default=str(datetime.now())[:19])
 
+class CustomPushNotification(db.Model):
+    __tablename__ = "push_notifications"
+    obj = uuid.uuid4
+    notification_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
+    notification_message = db.Column(db.Text, nullable=False)
+
+class ReadNotifications(db.Model):
+    __tablename__ = "read_notifications"
+    obj = uuid.uuid4
+    read_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
+    notification_id = db.Column(db.String(200), nullable=False)
+    user_id = db.Column(db.String(200), nullable=False)
 
 class ChatParticipant(db.Model):
     __tablename__ = "chat_participants"

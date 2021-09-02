@@ -12,6 +12,7 @@ from application.API.BusinessLogic.ChatMessagesBL import ChatMessagesBL
 from application.API.BusinessLogic.LocationBL import LocationBL
 from application.API.BusinessLogic.UserBL import UserBL
 from application.API.BusinessLogic.BuyBL import BuyBL
+from application.BusinessLogic.cpanel.CustomPushNotificationBl import CustomPushNotificationBL
 class BF:
     @staticmethod
     def getBL(blName):
@@ -42,6 +43,8 @@ class BF:
             return UserBL()
         elif blName == "buy":
             return BuyBL()
+        elif blName == "push_notifications":
+            return CustomPushNotificationBL()
 
 
 

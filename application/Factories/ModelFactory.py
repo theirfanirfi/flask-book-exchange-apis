@@ -1,4 +1,4 @@
-from application.Models.models import Post, Categories
+from application.Models.models import Post, Categories, CustomPushNotification
 
 class ModeFactory:
     @staticmethod
@@ -7,3 +7,5 @@ class ModeFactory:
             return Post()
         elif model == "category":
             return Categories()
+        elif model == "push_notifications":
+            return CustomPushNotification()

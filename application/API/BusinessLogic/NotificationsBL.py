@@ -5,6 +5,8 @@ from application.API.BusinessLogic.BusinessLogic import BusinessLogic
 from application.API.utils import AuthorizeRequest, notLoggedIn
 from flask import jsonify
 
+from application.Models import models
+
 
 class NotificationsBL(BusinessLogic):
 
@@ -168,3 +170,25 @@ class NotificationsBL(BusinessLogic):
         except Exception as e:
             print(e)
             return False, "Error occurred. Please try again"
+
+
+    ##read notifications
+
+    def is_notification_read(self, notification_id, user_id):
+        model = MF.getModel("read")[1]
+        notification = model.query.filter_by(notification_id=notification_id, user_id=user_id)
+        if not notification.count() > 0:
+            return self.make_custom_notification_read(notification_id, user_id)
+        return False
+
+    def make_custom_notification_read(self,notification_id, user_id):
+        model = MF.getModel("read")[0]
+        model.notification_id = notification_id
+        model.user_id = user_id
+        try:
+            db.session.add(model)
+            db.session.commit()
+            return model
+        except Exception as e:
+            print(e)
+            return False
