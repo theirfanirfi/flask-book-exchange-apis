@@ -43,7 +43,7 @@ class NotificationsAPI(FlaskView):
         response.update({"isFound": is_found, "notifications": notifications,"isPushNotificationsFound": False,
                              "push_notifications": user_push_notifications})
 
-        push_notifications = BF.getBL("push_notifications").get_notifications()
+        push_notifications = BF.getBL("push_notifications").get_pushh_notifications()
 
         if len(push_notifications) > 0:
             for push_notification in push_notifications:

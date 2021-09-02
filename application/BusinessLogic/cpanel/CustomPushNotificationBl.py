@@ -16,7 +16,7 @@ class CustomPushNotificationBL:
         notifications = CustomPushNotification.query.all()
         return notifications
 
-    def get_push_notifications(self):
+    def get_pushh_notifications(self):
         notifications = CustomPushNotification.query.all()
         return notifications
 
