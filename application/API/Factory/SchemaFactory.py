@@ -29,3 +29,5 @@ class SF:
             return ParticipantSchema(many=isMany)
         elif schemaName == "buy":
             return BuySchema(many=isMany)
+        elif schemaName == "custom_push_notification":
+            return CustomPushNotificationSchema(many=isMany)

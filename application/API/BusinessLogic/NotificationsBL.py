@@ -179,7 +179,8 @@ class NotificationsBL(BusinessLogic):
         notification = model.query.filter_by(notification_id=notification_id, user_id=user_id)
         if not notification.count() > 0:
             return self.make_custom_notification_read(notification_id, user_id)
-        return False
+        else:
+            return False
 
     def make_custom_notification_read(self,notification_id, user_id):
         model = MF.getModel("read")[0]

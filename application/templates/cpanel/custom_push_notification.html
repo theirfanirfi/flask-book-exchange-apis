@@ -33,6 +33,17 @@
                                 <form method="post" action="{{url_for('CustomPushNotificationsView:post')}}"
                                       enctype="multipart/form-data">
                                     {{form.csrf_token}}
+
+                                    <div class="form-group">
+                                        <label for="">{{form.notification_title.label}}</label>
+                                        {{form.notification_title(class_='form-control',placeholder='Notification Title')}}
+                                        {% if form.notification_title.errors %}
+                                        {% for error in form.notification_title.errors %}
+                                        <small class="form-text text-muted" style='color:red;'>{{error}}</small>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+
                                     <div class="form-group">
                                         <label for="">{{form.notification_message.label}}</label>
                                         {{form.notification_message(class_='form-control',placeholder='Notification Message')}}
@@ -62,6 +73,7 @@
                                     <thead>
                                     <tr>
                                         <th>Notification Id</th>
+                                        <th>Notification Title</th>
                                         <th>Notification Message</th>
                                         <th>Delete</th>
                                     </tr>
@@ -70,6 +82,7 @@
                                     <tfoot>
                                     <tr>
                                         <th>Notification Id</th>
+                                        <th>Notification Title</th>
                                         <th>Notification Message</th>
                                         <th>Delete</th>
                                     </tr>
@@ -80,6 +93,7 @@
                                     {% for n in notifications %}
                                     <tr>
                                         <td>{{n.notification_id}}</td>
+                                        <td>{{n.notification_title}}</td>
                                         <td>{{n.notification_message}}</td>
                                         <td>
                                             <a href="{{url_for('CustomPushNotificationsView:delete',id=n.notification_id)}}"

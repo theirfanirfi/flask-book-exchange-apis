@@ -2,6 +2,7 @@ from flask_classful import FlaskView, route
 from flask import request, jsonify
 from application.API.utils import AuthorizeRequest, notLoggedIn, b64_to_data, invalidArgsResponse
 from application.API.Factory.BLFactory import BF
+from application.API.Factory.SchemaFactory import SF
 from application.API.BusinessLogic.BusinessLogic import BusinessLogic
 
 
@@ -22,7 +23,7 @@ class NotificationsAPI(FlaskView):
             for push_notification in push_notifications:
                 p_notification = BF.getBL("notification").is_notification_read(push_notification.notification_id, user.user_id)
                 if p_notification:
-                    user_push_notifications.append(push_notification)
+                    user_push_notifications.append(SF.getSchema("custom_push_notification").dump(push_notification))
             response.update({"isPushNotificationsFound": True if len(user_push_notifications) > 0 else False, "push_notifications": user_push_notifications})
         else:
             response.update({"isPushNotificationsFound": False,
@@ -52,9 +53,10 @@ class NotificationsAPI(FlaskView):
             for push_notification in push_notifications:
                 p_notification = BF.getBL("notification").is_notification_read(push_notification.notification_id,
                                                                                user.user_id)
+                print(p_notification)
                 if p_notification:
                     print('p if')
-                    user_push_notifications.append(push_notification)
+                    user_push_notifications.append(SF.getSchema("custom_push_notification", isMany=False).dump(push_notification))
             response.update({"isPushNotificationsFound": True if len(user_push_notifications) > 0 else False,
                              "push_notifications": user_push_notifications})
 

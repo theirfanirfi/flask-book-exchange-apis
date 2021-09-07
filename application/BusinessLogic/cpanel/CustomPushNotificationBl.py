@@ -5,6 +5,7 @@ class CustomPushNotificationBL:
     def add_notification(self, form, user):
         notification = CustomPushNotification()
         notification.notification_message = form.notification_message.data
+        notification.notification_title = form.notification_title.data
         try:
             db.session.add(notification)
             db.session.commit()

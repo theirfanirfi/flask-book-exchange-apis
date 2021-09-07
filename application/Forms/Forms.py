@@ -35,7 +35,8 @@ class PostForm(FlaskForm):
     submit = SubmitField()
 
 class CustomPushNotificationForm(FlaskForm):
-    notification_message = TextAreaField('Notification Text', validators=[DataRequired()])
+    notification_title = StringField('Notification Title', validators=[DataRequired()])
+    notification_message = TextAreaField('Notification Text', validators=[DataRequired()], render_kw={'class':'ckeditor'})
     submit = SubmitField()
 
 

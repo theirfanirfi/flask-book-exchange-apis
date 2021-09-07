@@ -177,6 +177,7 @@ class CustomPushNotification(db.Model):
     obj = uuid.uuid4
     notification_id = db.Column(db.String(200), default=lambda: uuid.uuid4(), primary_key=True)
     notification_message = db.Column(db.Text, nullable=False)
+    notification_title = db.Column(db.Text, nullable=False)
 
 class ReadNotifications(db.Model):
     __tablename__ = "read_notifications"
@@ -401,3 +402,11 @@ class BuySchema(ma.Schema):
             if isinstance(prop, ColumnProperty)
         ]
         # fields += ['amIUserOne', 'user_one', 'user_two']
+
+class CustomPushNotificationSchema(ma.Schema):
+    class Meta:
+        fields = [
+            prop.key
+            for prop in class_mapper(CustomPushNotification).iterate_properties
+            if isinstance(prop, ColumnProperty)
+        ]
