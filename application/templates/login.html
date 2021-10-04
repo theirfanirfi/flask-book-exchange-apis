@@ -43,7 +43,7 @@
          class="login loginpage col-lg-offset-4 col-lg-4 col-md-offset-3 col-md-6 col-sm-offset-3 col-sm-6 col-xs-offset-0 col-xs-12">
         <h1><a href="#" title="Login Page" tabindex="-1">Cpanel</a></h1>
         <form name="loginform" id="loginform" action="{{url_for('UserView:post')}}" method="post">
-             {{form.csrf_token}}
+            {{form.csrf_token}}
             <p>
                 <label>{{form.email.label.text}}<br/>
                     {{form.email(class_='input')}}
@@ -74,7 +74,9 @@
 
     </div>
 </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+        integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+        crossorigin="anonymous"></script>
 
 <!-- CORE JS FRAMEWORK - START -->
 <script src="{{ url_for('static', filename='jquery-1.11.2.min.js') }}" type="text/javascript"></script>
@@ -89,23 +91,16 @@
 {% for category, message in messages %}
 {% if category == 'error' %}
 <script>
-        var msg = '{{message}}';
-        alert("Error: " + msg);
-
-
-
-
+    var msg = '{{message}}';
+    alert("Error: " + msg);
 
 
 </script>
 {% elif category == 'success' %}
 <script>
-        var msg = '{{message}}';
-        alert("Success: " + msg);
 
-
-
-
+    var msg = '{{message}}';
+    alert("Success: " + msg);
 
 
 
@@ -115,11 +110,16 @@
 {% endfor %}
 {% endif %}
 {% endwith %}
-</body>
-</html>
-</title>
-</head>
-<body>
 
+<script>
+    //     $(document).ready(function () {
+    //     alert('working');
+    //     var socket = io("http://192.168.100.140:5000/");
+    //     socket.on('connect', function () {
+    //         socket.emit('my', {data: 'I\'m connected!'});
+    //     });
+    // });
+</script>
 </body>
+
 </html>

@@ -3,6 +3,7 @@ from flask import request, jsonify
 from application.API.utils import AuthorizeRequest, notLoggedIn, b64_to_data, invalidArgsResponse
 from application.API.Factory.BLFactory import BF
 from application.API.BusinessLogic.BusinessLogic import BusinessLogic
+from application import socketio
 
 
 class ExchangeAPI(FlaskView, BusinessLogic):
@@ -70,6 +71,15 @@ class ExchangeAPI(FlaskView, BusinessLogic):
         request.form['to_be_notified_user_id'] = model.to_exchange_with_user_id
         request.form['is_exchange'] = 1
         isCreated, json_res = super().create(request, modelName="notification", involve_login_user=True)
+
+        if isCreated:
+            push_notification = dict({
+                "is_custom_push_notification": False,
+                "notification": json_res,
+                "to_be_notified_user_id": model.to_exchange_with_user_id,
+            })
+            socketio.emit("notification", push_notification)
+
         return isCreated
 
     def create_exchange_request_in_chat(self, request, model, user):

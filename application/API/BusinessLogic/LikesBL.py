@@ -1,7 +1,8 @@
 from application.Models.models import Stack
 from application.API.utils import uploadPostImage
-from application import db
+from application import db, socketio
 from application.API.Factory.SchemaFactory import SF
+from flask import jsonify
 from application.API.BusinessLogic.BusinessLogic import BusinessLogic
 
 
@@ -27,7 +28,15 @@ class LikesBL(BusinessLogic):
         request.form['user_id'] = model.user_id
         request.form['to_be_notified_user_id'] = post.user_id
         request.form['is_like'] = 1
-        isCreated, json_res = super().create(request, "notification", True)
+        isCreated, json_res = super().create(request, "notification", True, is_jsonify=False)
+        if isCreated:
+            push_notification = dict({
+                "is_custom_push_notification": False,
+                "notification": json_res,
+                "to_be_notified_user_id": post.user_id,
+            })
+            socketio.emit("notification", push_notification)
+
         return isCreated
 
     def delete_like_notification(self, req, model_data):

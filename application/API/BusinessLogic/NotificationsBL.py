@@ -6,7 +6,7 @@ from application.API.utils import AuthorizeRequest, notLoggedIn
 from flask import jsonify
 
 from application.Models import models
-
+from application import socketio
 
 class NotificationsBL(BusinessLogic):
 
@@ -90,7 +90,16 @@ class NotificationsBL(BusinessLogic):
         n.exchange_id = notification.exchange_id
         n.user_id = notification.to_be_notified_user_id
         n.to_be_notified_user_id = notification.user_id
-        return self.save_notification(n)
+        isSaved = self.save_notification(n)
+        if isSaved[0]:
+            push_notification = dict({
+                "is_custom_push_notification": False,
+                "notification": SF.getSchema("notification", isMany=False).dump(n),
+                "to_be_notified_user_id": notification.to_be_notified_user_id,
+            })
+            socketio.emit("notification", push_notification)
+
+        return isSaved
 
     def buy_confirmed_notifications(self, buy):
         print('buy confirmed '+buy.buy_id)
@@ -111,8 +120,17 @@ class NotificationsBL(BusinessLogic):
         n.buy_id = notification.buy_id
         n.user_id = notification.to_be_notified_user_id
         n.to_be_notified_user_id = notification.user_id
-        return self.save_notification(n)
 
+        isSaved =  self.save_notification(n)
+        if isSaved[0]:
+            push_notification = dict({
+                "is_custom_push_notification": False,
+                "notification": SF.getSchema("notification", isMany=False).dump(n),
+                "to_be_notified_user_id": notification.to_be_notified_user_id,
+            })
+            socketio.emit("notification", push_notification)
+
+        return isSaved
     def exchange_declined_notifications(self, exchange):
         print('exchange declined')
         model = MF.getModel("notification")
@@ -131,7 +149,17 @@ class NotificationsBL(BusinessLogic):
         n.exchange_id = notification.exchange_id
         n.user_id = notification.to_be_notified_user_id
         n.to_be_notified_user_id = notification.user_id
-        return self.save_notification(n)
+
+        isSaved = self.save_notification(n)
+        if isSaved[0]:
+            push_notification = dict({
+                "is_custom_push_notification": False,
+                "notification": SF.getSchema("notification", isMany=False).dump(n),
+                "to_be_notified_user_id": notification.to_be_notified_user_id,
+            })
+            socketio.emit("notification", push_notification)
+
+        return isSaved
 
     def buy_declined_notifications(self, buy):
         model = MF.getModel("notification")
@@ -150,7 +178,17 @@ class NotificationsBL(BusinessLogic):
         n.buy_id = notification.buy_id
         n.user_id = notification.to_be_notified_user_id
         n.to_be_notified_user_id = notification.user_id
-        return self.save_notification(n)
+
+        isSaved = self.save_notification(n)
+        if isSaved[0]:
+            push_notification = dict({
+                "is_custom_push_notification": False,
+                "notification": SF.getSchema("notification", isMany=False).dump(n),
+                "to_be_notified_user_id": notification.to_be_notified_user_id,
+            })
+            socketio.emit("notification", push_notification)
+
+        return isSaved
 
     def exchange_withdrawn_notifications(self, exchange):
         model = MF.getModel("notification")[1]

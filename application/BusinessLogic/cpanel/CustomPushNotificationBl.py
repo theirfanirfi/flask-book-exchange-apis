@@ -9,9 +9,9 @@ class CustomPushNotificationBL:
         try:
             db.session.add(notification)
             db.session.commit()
-            return True, 'Notification Sent.'
+            return True, notification, 'Notification Sent.'
         except Exception as e:
-            return False, str(e)
+            return False, False, str(e)
 
     def get_notifications(self):
         notifications = CustomPushNotification.query.all()

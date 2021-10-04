@@ -1,9 +1,10 @@
 from flask_classful import FlaskView, route
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, jsonify
 from application.Forms.Forms import CustomPushNotificationForm
 from flask_login import login_required, current_user
 from application.Factories.BF import BF
-
+from application import socketio
+from application.API.Factory.SchemaFactory import SF
 class CustomPushNotificationsView(FlaskView):
 	title = 'Custom Push Notifications'
 	exclude_methods=['redirect_with_form']
@@ -28,8 +29,13 @@ class CustomPushNotificationsView(FlaskView):
 		form = CustomPushNotificationForm()
 		user = current_user
 		if form.validate_on_submit():
-			isSaved, message = BF.getBL('push_notifications').add_notification(form, user)
+			isSaved, notification, message = BF.getBL('push_notifications').add_notification(form, user)
 			if isSaved:
+				push_notification = dict({
+					"notification": SF.getSchema("custom_push_notification", isMany=False).dump(notification),
+					"is_push_notification": True,
+				})
+				socketio.emit("notification", push_notification)
 				flash(message, 'success')
 			else:
 				flash(message, 'error')

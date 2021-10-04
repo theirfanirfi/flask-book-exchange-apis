@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from application.config import Config
 from flask_login import LoginManager
 from flask_marshmallow import Marshmallow
+from flask_socketio import SocketIO
 
 
 
@@ -29,9 +30,30 @@ migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 login_manager.login_view = 'UserView:index'
 login_manager.login_message_category = 'info'
+socketio = SocketIO(app, async_mode='threading')
+
+num = 0
+
+
+@socketio.on('my_event')
+def handle_my_custom_event(j):
+    print('received args: ', str(j))
+
+@socketio.on('my')
+def event():
+    print('event rec')
+    socketio.emit('update', {'data': "test"});
+
+@socketio.on('connect')
+def test_connect():
+    print('connected')
+    global num
+    num = num + 1
+    print('num: ',num)
+    socketio.emit('message', {'data': "test"})
+    # socketio.emit('update', {'data': "test"})
 
 from application.Models import *
-
 # from application.cpanel.routes import cpanel
 
 # # # app.register_blueprint(main)
