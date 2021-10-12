@@ -70,7 +70,7 @@ class ExchangeAPI(FlaskView, BusinessLogic):
         # request.form['user_id'] = model.to_exchange_with_user_id
         request.form['to_be_notified_user_id'] = model.to_exchange_with_user_id
         request.form['is_exchange'] = 1
-        isCreated, json_res = super().create(request, modelName="notification", involve_login_user=True)
+        isCreated, json_res = super().create(request, modelName="notification", is_jsonify=False, involve_login_user=True)
 
         if isCreated:
             push_notification = dict({
